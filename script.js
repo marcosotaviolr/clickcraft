@@ -61,30 +61,31 @@ close.forEach(function(botao) {
 })
 
 function atualizarMat() {
-    qntWood.innerHTML = wood
-    qntCoin.innerHTML = coin
+    qntWood.innerHTML = materiais.wood
+    qntCoin.innerHTML = materiais.coin
+    qntStone.innerHTML = materiais.stone
 }
 
 function treeAdd() {
-    wood += 1 + inventario.machado
+    materiais.wood += 1 + inventario.machado
     atualizarMat()
 }
 
 function stoneAdd() {
     if (inventario.picareta >= 1) {
-        stone += inventario.picareta
+        materiais.stone += inventario.picareta
         atualizarMat()
     }
 }
 
 function coinAdd(event) {
-    if (wood > 0) {
+    if (materiais.wood > 0) {
         if (event.ctrlKey) {
-            coin += wood
-            wood = wood - wood
+            materiais.coin += materiais.wood
+            materiais.wood = materiais.wood - materiais.wood
         } else {
-            wood-- 
-            coin++
+            materiais.wood-- 
+            materiais.coin++
         }
     }
     atualizarMat()
@@ -113,8 +114,8 @@ function openCrafter () {
 }
 
 function comprar(item, preco, esconder, nivel) {
-    if (coin >= preco && inventario[item] === nivel) {
-        coin = coin - preco
+    if (materiais.coin >= preco && inventario[item] === nivel) {
+        materiais.coin = materiais.coin - preco
         esconder.style.display = 'none'
         atualizarMat()
         inventario[item]++
