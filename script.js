@@ -13,6 +13,12 @@ let inventario = {
     picareta: 0
 }
 
+let niveis = [
+    'Nenhum',
+    'Madeira', 
+    'Pedra'
+]
+
 // HTML:
 let panel = document.querySelector('#painel')
 let qntWood = document.querySelector('#qntMadeira')
@@ -31,6 +37,12 @@ let craftAxeWood = document.querySelector('#craftMachadoMadeira')
 let craftPickaxeWood = document.querySelector('#craftPicaretaMadeira')
 let craftarAxeWood = document.querySelector('#fabricarMachadoMadeira')
 let craftarPickWood = document.querySelector('#fabricarPicaretaMadeira')
+let bag = document.querySelector('#mochila')
+let config = document.querySelector('#configuracoes')
+let configInterface = document.querySelector('#interfaceConfig')
+let bagInterface = document.querySelector('#interfaceBag')
+let axeLevel = document.querySelector('#nivelMachado')
+let pickaxeLevel = document.querySelector('#nivelPicareta')
 
 // Imagens:
 let tree = document.querySelector('.arvores')
@@ -42,6 +54,8 @@ rock.addEventListener('click', stoneAdd)
 sell.addEventListener('click', coinAdd)
 shop.addEventListener('click', openShop)
 crafter.addEventListener('click', openCrafter)
+config.addEventListener('click', openConfig)
+bag.addEventListener('click', openBag)
 
 buyAxeWood.addEventListener('click', function() {
     comprar('machadoBlue', 10, shopAxeWood, 0)
@@ -96,7 +110,21 @@ function closeWindow() {
         shopInterface.style.display = 'none'
     } else if (crafterInterface.style.display === 'block') {
         crafterInterface.style.display = 'none'
+    } else if (configInterface.style.display === 'block') {
+        configInterface.style.display = 'none'
+    } else if (bagInterface.style.display === 'block') {
+        bagInterface.style.display = 'none'
     }
+}
+
+function openConfig() {
+    configInterface.style.display = 'block'
+}
+
+function openBag() {
+    bagInterface.style.display = 'block'
+    axeLevel.innerHTML = niveis[inventario.machado]
+    pickaxeLevel.innerHTML = niveis[inventario.picareta]
 }
 
 function openShop () {

@@ -8,19 +8,29 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="painel">
-        <h3>Materiais</h3>
-        <div class="recurso">
-            <span><img src="assets/img/coin.png" alt="coin" class="icon"> Moeda:</span>
-            <span id="qntMoeda">0</span>
+    <div id="hud">
+        <div>
+            <div id="configuracoes">
+                <img src="assets/img/config.png" alt="config" class="iconhud">
+            </div>
+            <div id="mochila">
+                <img src="assets/img/bag.png" alt="bag" class="iconhud">
+            </div>
         </div>
-        <div class="recurso">
-            <span><img src="assets/img/iconwood.png" alt="iconwood" class="icon"> Madeira:</span>
-            <span id="qntMadeira">0</span>
-        </div>
-        <div class="recurso">
-            <span><img src="assets/img/iconstone.png" alt="iconstone" class="icon"> Pedra:</span>
-            <span id="qntPedra">0</span>
+        <div id="painel">
+            <h3>Materiais</h3>
+            <div class="recurso">
+                <span><img src="assets/img/coin.png" alt="coin" class="icon"> Moeda:</span>
+                <span id="qntMoeda">0</span>
+            </div>
+            <div class="recurso">
+                <span><img src="assets/img/iconwood.png" alt="iconwood" class="icon"> Madeira:</span>
+                <span id="qntMadeira">0</span>
+            </div>
+            <div class="recurso">
+                <span><img src="assets/img/iconstone.png" alt="iconstone" class="icon"> Pedra:</span>
+                <span id="qntPedra">0</span>
+            </div>
         </div>
     </div>
 
@@ -72,8 +82,25 @@
                     <button class="comprar" id="comprarPicaretaMadeira">Comprar</button>
                 </div>
             </div>
-
         </div>
+    </div>
+    <div class="interfaces" id="interfaceConfig">
+        <button class="fechar">X</button>
+        <h1>Configurações</h1>
+        <h2 style="padding: 10px;">Instruções</h2>
+        <ul style="padding-left: 25px; font-size: 17px; line-height: 1.5;">
+            <li>Clique na árvore para conseguir madeira</li>
+            <li>Clique no "Sell" para vender a madeira (ctrl + click = vende todas)</li>
+            <li>Clique no "Shop" para comprar blueprints e outras coisas</li>
+            <li>Clique no "Crafter" (do lado do shop) para craftar os blueprints comprados</li>
+        </ul>
+    </div>
+    <div class="interfaces" id="interfaceBag">
+        <button class="fechar">X</button>
+        <h1>Mochila</h1>
+        <h2 style="padding: 10px;">Ferramentas</h2>
+        <p style="padding-left: 10px;">Nível do Machado: <span id="nivelMachado"></span></p>
+        <p style="padding-left: 10px;">Nível da Picareta: <span id="nivelPicareta"></span></p>
     </div>
 
     <div class="interfaces" id="crafterIntaface">
