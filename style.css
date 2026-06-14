@@ -109,6 +109,13 @@ p {
     border-bottom: 2px solid black;
 }
 
+#sellAll {
+    padding: 18px 18px 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
+}
+
 .shopImg {
     width: 100px;
     height: 100px;
@@ -116,12 +123,12 @@ p {
 }
 
 .itemTitle {
-    padding: 20px 25px 8px 25px;
+    padding: 20px 25px 8px 0px;
     font-size: 30px;
 }
 
 .subtitulo {
-    padding: 0px 0px 4px 30px;
+    padding: 0px 0px 8px 10px;
     font-size: 18px;
 }
 
@@ -194,6 +201,33 @@ p {
     cursor: pointer;
 }
 
+#sellMadeira {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
+}
+
+.sellItem {
+    border-radius: 20px;
+    border: 0;
+    padding: 10px;
+    margin: 33px 0px 0px 0px;
+}
+
+.sellItem button:hover {
+    cursor: pointer;
+}
+
+.sellImg {
+    width: 90px;
+    height: 80px;
+    margin: 15px 0px 15px 15px;
+}
+
+#venderTudo {
+    margin-right: 15px;
+}
+
 #islands {
     display: flex;
     position: relative
@@ -226,7 +260,15 @@ p {
     height: 80px;
 }
 
+.arvores:hover {
+    cursor: url('assets/img/cursorMachado48.png'), auto;
+}
+
 .pedras {
     width: 60px;
     height: 60px;
+}
+
+.pedras:hover {
+    cursor: url('assets/img/cursorPicareta48.png'), auto;
 }

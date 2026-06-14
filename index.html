@@ -60,7 +60,7 @@
                     <div style="display: flex; flex-direction: column;">
                         <h2 class="itemTitle">Machado de Madeira</h2>
                         <h3 class="subtitulo">(BluePrint)</h3>
-                        <p style="padding-left: 30px;">Quando utilizado, toda madeira coletada adiciona +1</p>
+                        <p>Quando utilizado, toda madeira coletada adiciona +1</p>
                     </div>
                 </div>
                 <div>
@@ -74,7 +74,7 @@
                     <div style="display: flex; flex-direction: column;">
                         <h2 class="itemTitle">Picareta de Madeira</h2>
                         <h3 class="subtitulo">(BluePrint)</h3>
-                        <p style="padding-left: 30px;">Libera a mineração de pedra</p>
+                        <p>Libera a mineração de pedra</p>
                     </div>
                 </div>
                 <div>
@@ -99,8 +99,8 @@
         <button class="fechar">X</button>
         <h1>Mochila</h1>
         <h2 style="padding: 10px;">Ferramentas</h2>
-        <p style="padding-left: 10px;">Nível do Machado: <span id="nivelMachado"></span></p>
-        <p style="padding-left: 10px;">Nível da Picareta: <span id="nivelPicareta"></span></p>
+        <p>Nível do Machado: <span id="nivelMachado"></span></p>
+        <p>Nível da Picareta: <span id="nivelPicareta"></span></p>
     </div>
 
     <div class="interfaces" id="crafterIntaface">
@@ -111,7 +111,7 @@
                 <img src="assets/img/axe.png" alt="axe" class="shopImg">
                 <div style="display: flex; flex-direction: column;">
                     <h2 class="itemTitle">Machado de Madeira</h2>
-                    <p style="padding-left: 30px; padding-top: 10px;">Quando utilizado, toda madeira coletada adiciona +1</p>
+                    <p style="padding-left: 10px; padding-top: 10px;">Quando utilizado, toda madeira coletada adiciona +1</p>
                 </div>
             </div>
             <div>
@@ -125,13 +125,35 @@
                 <img src="assets/img/picaxe.png" alt="pickaxe" class="shopImg">
                 <div style="display: flex; flex-direction: column;">
                     <h2 class="itemTitle">Picareta de Madeira</h2>
-                    <p style="padding-left: 30px; padding-top: 10px;">Libera a mineração de pedra</p>
+                    <p style="padding-left: 10px; padding-top: 10px;">Libera a mineração de pedra</p>
                 </div>
             </div>
             <div>
                 <p style="width: 100px; margin: 20px 0px 0px 0px; text-align: center;">100<img src="assets/img/iconwood.png" alt="coin" style="width: 20px; height: 20px;"></p>
                 <button class="comprar" id="fabricarPicaretaMadeira">Fabricar</button>
             </div>
+        </div>
+    </div>
+    <div class="interfaces" id="sellInterface" style="display: block;">
+        <button class="fechar">X</button>
+        <h1>Venda de Materiais</h1>
+        <div id="sellAll">
+            <div>
+                <h2>Valor total: <span id="valorTotal"></span></h2>
+            </div>
+            <button>Vender tudo</button>
+        </div>
+        <div id="sellMadeira">
+            <div>
+                <img src="assets/img/iconwood.png" alt="wood" class="sellImg">
+            </div>
+            <div class="botoesSell">
+                <input type="number" value="1" min="1" name="quantidade" id="quantidadeVender1" class="sellItem">
+                <button class="sellItem">Vender</button>
+                <button class="sellItem" id="venderTudo">Vender tudo</button>
+            </div>
+        </div>
+        <div id="sellPedra">
         </div>
     </div>
     <script src="script.js"></script>
