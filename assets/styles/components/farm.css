@@ -1,0 +1,57 @@
+.island-map {
+    display: flex;
+    position: relative;
+}
+
+.island {
+    background-color: green;
+    width: 450px;
+    height: 450px;
+    border-radius: 15px;
+    padding: 30px;
+}
+
+.island--initial {
+    position: relative;
+}
+
+.island--second {
+    position: absolute;
+    left: 130%;
+}
+
+.island--third {
+    position: absolute;
+    right: 130%;
+}
+
+.tree-resource {
+    width: 60px;
+    height: 80px;
+}
+
+.stone-resource {
+    width: 60px;
+    height: 60px;
+}
+
+.modal {
+    position: fixed;
+    width: 1100px;
+    height: 700px;
+    background-color: rgb(187, 95, 30);
+    z-index: 10;
+    border-radius: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.modal__title {
+    padding: 18px;
+    padding-left: 35px;
+    font-size: 35px;
+    border-bottom: 2px solid black;
+    padding-bottom: 10px;
+}

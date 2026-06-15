@@ -1,0 +1,50 @@
+.btn {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn--primary {
+    width: 100px;
+    height: 60px;
+    margin-top: 15px;
+    margin-right: 20px;
+}
+
+.btn--danger {
+    z-index: 20;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 12px;
+    right: 10px;
+    background-color: red;
+}
+
+.farm-trigger {
+    cursor: pointer;
+}
+
+.farm-trigger--shop {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 35%;
+    right: 30%;
+}
+
+.farm-trigger--crafter {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    top: 38%;
+    left: 30%;
+}
+
+.farm-trigger--sell {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 55%;
+    left: 43%;
+}

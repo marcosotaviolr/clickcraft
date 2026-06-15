@@ -1,0 +1,47 @@
+.shop-item__image {
+    width: 100px;
+    height: 100px;
+    padding: 20px;
+}
+
+.shop-item__title {
+    padding: 20px 25px 8px 25px;
+    font-size: 30px;
+}
+
+.shop-item__subtitle {
+    padding: 0px 0px 4px 30px;
+    font-size: 18px;
+}
+
+.shop-item__info {
+    display: flex;
+}
+
+.shop-item__description {
+    padding-left: 30px;
+    padding-top: 10px;
+}
+
+.shop-item__price {
+    width: 100px;
+    margin: 20px 5px 0px 15px;
+}
+
+.craft-item__price {
+    width: 100px;
+    margin: 20px 0px 0px 0px;
+    text-align: center;
+}
+
+.shop-item-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
+}
+
+.craft-item-row {
+    display: none;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
+}

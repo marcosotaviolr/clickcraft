@@ -1,0 +1,33 @@
+.hud {
+    /* container do HUD — posicionamento dos filhos é absoluto */
+}
+
+.hud__actions {
+    /* agrupa botões de configuração e mochila */
+}
+
+.hud__settings {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 20px 20px 0px 30px;
+}
+
+.hud__inventory {
+    position: absolute;
+    top: 0;
+    left: 55px;
+    margin: 20px 20px 0px 30px;
+}
+
+.hud__materials-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 7px;
+}
+
+.resource-counter {
+    display: flex;
+    justify-content: space-between;
+}
