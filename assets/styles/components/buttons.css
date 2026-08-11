@@ -27,24 +27,41 @@
 
 .farm-trigger--shop {
     position: absolute;
-    width: 70px;
-    height: 70px;
-    top: 35%;
-    right: 30%;
+    width: 95px;
+    height: 95px;
+    top: 32%;
+    right: 18%;
 }
 
 .farm-trigger--crafter {
     position: absolute;
-    width: 55px;
-    height: 55px;
-    top: 38%;
-    left: 30%;
+    width: 80px;
+    height: 80px;
+    top: 34%;
+    left: 18%;
 }
 
 .farm-trigger--sell {
     position: absolute;
-    width: 70px;
-    height: 70px;
-    top: 55%;
-    left: 43%;
+    width: 95px;
+    height: 95px;
+    top: 58%;
+    left: 38%;
+}
+
+/* Depois da fornalha: Sell fica embaixo do Shop */
+.farm-trigger--sell-shifted {
+    top: 58%;
+    left: auto;
+    right: 18%;
+}
+
+/* Fornalha fica embaixo do Crafter */
+.farm-trigger--furnace {
+    display: none;
+    position: absolute;
+    width: 95px;
+    height: 95px;
+    top: 58%;
+    left: 18%;
 }

@@ -29,3 +29,15 @@ export function hasEnoughCoins(materials, price) {
 export function hasEnoughMaterial(materials, materialKey, cost) {
     return materials[materialKey] >= cost;
 }
+
+/**
+ * Verifica se o jogador possui todos os materiais de uma lista de custos.
+ * @param {Object} materials - Estado de materiais do jogador.
+ * @param {Array<{materialKey: string, amount: number}>} costs - Lista de custos.
+ * @returns {boolean}
+ */
+export function hasEnoughMaterials(materials, costs) {
+    return costs.every(function (cost) {
+        return hasEnoughMaterial(materials, cost.materialKey, cost.amount);
+    });
+}

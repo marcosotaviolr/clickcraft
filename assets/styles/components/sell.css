@@ -1,0 +1,74 @@
+.modal--sell {
+    height: min(700px, 90vh);
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.sell-summary {
+    height: 60px;
+    align-items: center;
+}
+
+.sell-items {
+    max-height: calc(min(700px, 90vh) - 140px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sell-item-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
+    align-items: center;
+}
+
+#sell-item-iron,
+#sell-item-coal,
+#sell-item-gold {
+    display: none;
+}
+
+.sell-item__info {
+    display: flex;
+    align-items: center;
+}
+
+.sell-item__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sell-item__controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sell-item__controls button:first-of-type {
+    margin-right: 0px;
+}
+
+.sell-item__input {
+    height: 28px;
+    width: 150px;
+    padding-left: 20px;
+    border: 0px;
+    border-radius: 10px;
+    margin-top: 8px;
+    text-align: center;
+    font-family: inherit;
+}
+
+.sell-item__total-p {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sell-summary .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}

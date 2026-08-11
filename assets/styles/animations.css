@@ -1,1 +1,24 @@
-/* Reservado para animações futuras — nenhuma animação ativa no jogo atual */
+/* Popup de coleta (+1, +2, etc.) */
+
+.click-popup {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+    font-family: "Press Start 2P", cursive;
+    font-size: 14px;
+    color: #ffffff;
+    text-shadow: 1px 1px 0 #000000;
+    animation: float-up 0.8s ease-out forwards;
+}
+
+@keyframes float-up {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, -40px);
+    }
+}

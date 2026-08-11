@@ -9,6 +9,8 @@ let shopModal;
 let crafterModal;
 let settingsModal;
 let inventoryModal;
+let sellModal;
+let furnaceModal;
 
 /**
  * Armazena referências aos modais e registra botões de fechar.
@@ -18,6 +20,8 @@ export function initModals() {
     crafterModal = document.querySelector(SELECTORS.CRAFTER_MODAL);
     settingsModal = document.querySelector(SELECTORS.SETTINGS_MODAL);
     inventoryModal = document.querySelector(SELECTORS.INVENTORY_MODAL);
+    sellModal = document.querySelector(SELECTORS.SELL_MODAL);
+    furnaceModal = document.querySelector(SELECTORS.FURNACE_MODAL);
 
     const closeButtons = document.querySelectorAll(SELECTORS.MODAL_CLOSE);
 
@@ -49,6 +53,10 @@ export function closeActiveModal() {
         settingsModal.style.display = DISPLAY.NONE;
     } else if (isModalVisible(inventoryModal)) {
         inventoryModal.style.display = DISPLAY.NONE;
+    } else if (isModalVisible(sellModal)) {
+        sellModal.style.display = DISPLAY.NONE;
+    } else if (isModalVisible(furnaceModal)) {
+        furnaceModal.style.display = DISPLAY.NONE;
     }
 }
 

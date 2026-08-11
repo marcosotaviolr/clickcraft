@@ -1,0 +1,77 @@
+# ClickCraft — configuração Apache (Hostgator)
+# Domínio: https://marcos.lucasgiovanni.com.br
+
+# Página inicial
+DirectoryIndex index.html
+
+# Evita listagem de pastas
+Options -Indexes
+
+# Charset padrão
+AddDefaultCharset UTF-8
+
+# MIME types (importante para ES modules)
+AddType text/html .html
+AddType text/css .css
+AddType application/javascript .js
+AddType application/json .json
+AddType image/png .png
+AddType image/jpeg .jpg .jpeg
+AddType image/webp .webp
+AddType image/gif .gif
+AddType image/x-icon .ico
+AddType font/woff .woff
+AddType font/woff2 .woff2
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Força HTTPS
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Canonical: sem www (mantém o subdomínio marcos.lucasgiovanni.com.br)
+    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+    RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+
+    # Se a URL for uma pasta, serve o index.html dela
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^(.+)/$ $1/index.html [L]
+</IfModule>
+
+# Compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css
+    AddOutputFilterByType DEFLATE application/javascript text/javascript
+    AddOutputFilterByType DEFLATE application/json image/svg+xml
+</IfModule>
+
+# Cache de assets estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 day"
+    ExpiresByType application/javascript "access plus 1 day"
+    ExpiresByType text/javascript "access plus 1 day"
+    ExpiresByType image/png "access plus 1 day"
+    ExpiresByType image/jpeg "access plus 1 day"
+    ExpiresByType image/webp "access plus 1 day"
+    ExpiresByType image/gif "access plus 1 day"
+    ExpiresByType image/x-icon "access plus 30 days"
+    ExpiresByType font/woff "access plus 30 days"
+    ExpiresByType font/woff2 "access plus 30 days"
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# Cabeçalhos de segurança básicos
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Bloqueia acesso a arquivos sensíveis, se existirem
+<FilesMatch "(^\.env|\.git|\.gitignore|\.htaccess)">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>

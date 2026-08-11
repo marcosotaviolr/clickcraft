@@ -1,0 +1,39 @@
+.furnace-item__title {
+    font-size: 22px;
+    padding: 12px 25px 8px 25px;
+}
+
+.furnace-item__cost {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 30px;
+    flex-wrap: wrap;
+}
+
+.furnace-progress {
+    width: 100%;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.furnace-progress__bar {
+    width: 220px;
+    height: 14px;
+    margin: 8px auto 0;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.furnace-progress__fill {
+    width: 0%;
+    height: 100%;
+    background-color: #ff8c1a;
+    transition: width 0.1s linear;
+}
+
+.furnace-item-row .sell-item__controls button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
