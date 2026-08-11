@@ -1,0 +1,24 @@
+# Normalize text files; keep images/binary intact
+* text=auto eol=lf
+
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.htaccess text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.mp3 binary
+*.wav binary
+*.mp4 binary
+*.webm binary

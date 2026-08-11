@@ -1,0 +1,11 @@
+.modal--shop {
+    height: min(700px, 90vh);
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.shop-item-list {
+    max-height: calc(min(700px, 90vh) - 90px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}

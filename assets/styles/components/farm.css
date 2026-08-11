@@ -1,0 +1,180 @@
+.island-map {
+    display: flex;
+    position: relative;
+}
+
+.island {
+    background-color: transparent;
+    background-image: url('../../img/grama.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 450px;
+    height: 450px;
+    padding: 30px;
+}
+
+.island--initial {
+    position: relative;
+}
+
+.island--second {
+    position: absolute;
+    left: 130%;
+}
+
+.island__resources {
+    display: none;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.iron-resource {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    top: 12%;
+    left: 10%;
+    cursor: default;
+}
+
+.coal-resource {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    top: 12%;
+    right: 10%;
+    cursor: default;
+}
+
+.gold-resource {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    bottom: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: default;
+}
+
+.island--third {
+    position: absolute;
+    right: 130%;
+}
+
+.island__lock {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    background-color: rgba(0, 0, 0, 0.55);
+    border-radius: 48px;
+    z-index: 2;
+}
+
+.island__lock-title {
+    font-size: 22px;
+    color: #fff;
+}
+
+.island__lock-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    color: #fff;
+}
+
+.island__unlock-button {
+    margin: 0;
+}
+
+.tree-resource {
+    position: absolute;
+    width: 75px;
+    height: 95px;
+    top: 10%;
+    left: 10%;
+    cursor: default;
+}
+
+.stone-resource {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    top: 12%;
+    right: 10%;
+    cursor: default;
+}
+
+.tree-resource.has-axe {
+    cursor: url('../../img/cursormachadomadeira40x38.png') 0 0, pointer;
+}
+
+.tree-resource.has-axe-stone {
+    cursor: url('../../img/cursormachado48.png') 0 0, pointer;
+}
+
+.tree-resource.has-axe-iron {
+    cursor: url('../../img/machadoferro40.png') 0 0, pointer;
+}
+
+.tree-resource.has-axe-gold {
+    cursor: url('../../img/cmachadoouro.png') 0 0, pointer;
+}
+
+.stone-resource.has-pickaxe,
+.iron-resource.has-pickaxe,
+.coal-resource.has-pickaxe,
+.gold-resource.has-pickaxe {
+    cursor: url('../../img/cursorpicaretamadeira37x37.png') 0 0, pointer;
+}
+
+.stone-resource.has-pickaxe-stone,
+.iron-resource.has-pickaxe-stone,
+.coal-resource.has-pickaxe-stone,
+.gold-resource.has-pickaxe-stone {
+    cursor: url('../../img/cursorpicareta48.png') 0 0, pointer;
+}
+
+.stone-resource.has-pickaxe-iron,
+.iron-resource.has-pickaxe-iron,
+.coal-resource.has-pickaxe-iron,
+.gold-resource.has-pickaxe-iron {
+    cursor: url('../../img/picaretaferro37.png') 0 0, pointer;
+}
+
+.stone-resource.has-pickaxe-gold,
+.iron-resource.has-pickaxe-gold,
+.coal-resource.has-pickaxe-gold,
+.gold-resource.has-pickaxe-gold {
+    cursor: url('../../img/cpicaretaouro.png') 0 0, pointer;
+}
+
+.modal {
+    position: fixed;
+    width: 1100px;
+    height: min(700px, 90vh);
+    max-height: 90vh;
+    background-color: rgb(187, 95, 30);
+    z-index: 50;
+    border-radius: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.modal__title {
+    padding: 18px;
+    padding-left: 35px;
+    font-size: 35px;
+    border-bottom: 2px solid black;
+    padding-bottom: 10px;
+}
