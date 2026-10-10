@@ -1,47 +1,38 @@
-import { materials } from '../core/state.js';
+import { materials, inventory, addMaterial, spendMaterials } from '../core/state.js';
 import {
     SELECTORS,
     FURNACE_DURATION_MS,
     FURNACE_RECIPES,
+    INVENTORY_KEYS,
+    ITEM_LEVEL_NONE,
+    MATERIAL_KEYS,
 } from '../utils/constants.js';
+import { getMaterialInfo } from '../entities/materials.js';
+import { isModalVisible } from '../utils/helpers.js';
+import { bindTrustedClick } from '../utils/security.js';
+import { createElement, createImage, setButtonAvailability } from '../ui/dom.js';
+import { onGameStateChanged } from '../ui/uiEvents.js';
 import { refreshHud } from '../ui/hudManager.js';
 import { openModal } from '../ui/modalManager.js';
 
-/** Seletores da UI de cada receita da fornalha. */
-const RECIPE_UI = {
-    iron: {
-        recipe: FURNACE_RECIPES.IRON,
-        oreCost: '#furnace-iron-ore-cost',
-        coalCost: '#furnace-iron-coal-cost',
-        maxCraft: '#furnace-iron-max',
-        input: '#furnace-iron-input',
-        craftButton: '#furnace-iron-craft',
-        craftAllButton: '#furnace-iron-craft-all',
-        status: '#furnace-iron-status',
-        progressFill: '#furnace-iron-progress',
-    },
-    gold: {
-        recipe: FURNACE_RECIPES.GOLD,
-        oreCost: '#furnace-gold-ore-cost',
-        coalCost: '#furnace-gold-coal-cost',
-        maxCraft: '#furnace-gold-max',
-        input: '#furnace-gold-input',
-        craftButton: '#furnace-gold-craft',
-        craftAllButton: '#furnace-gold-craft-all',
-        status: '#furnace-gold-status',
-        progressFill: '#furnace-gold-progress',
-    },
-};
+/** Fornos exibidos no modal, na ordem de progressão do jogo. */
+const FURNACE_SLOTS = [
+    { id: 'iron', recipe: FURNACE_RECIPES.IRON },
+    { id: 'gold', recipe: FURNACE_RECIPES.GOLD },
+];
 
-/** Estado interno da fundição por receita. */
-const smeltState = {
-    iron: createEmptySmeltState(),
-    gold: createEmptySmeltState(),
-};
+/** Intervalo de atualização da barra de progresso e do contador (ms). */
+const TICK_INTERVAL_MS = 100;
+
+/** Referências de DOM de cada forno, preenchidas ao montar o modal. */
+const slotViews = new Map();
+
+/** Estado da fila de fundição de cada forno. */
+const smeltStates = new Map();
 
 /**
  * Cria o estado inicial de uma fila de fundição.
- * @returns {{isSmelting: boolean, remainingIngots: number, totalIngots: number, smeltTimerId: number|null, progressTimerId: number|null, smeltStartedAt: number}}
+ * @returns {{isSmelting: boolean, remainingIngots: number, totalIngots: number, smeltTimerId: number|null, tickTimerId: number|null, smeltStartedAt: number}}
  */
 function createEmptySmeltState() {
     return {
@@ -49,9 +40,29 @@ function createEmptySmeltState() {
         remainingIngots: 0,
         totalIngots: 0,
         smeltTimerId: null,
-        progressTimerId: null,
+        tickTimerId: null,
         smeltStartedAt: 0,
     };
+}
+
+/**
+ * Indica se o jogador já construiu a fornalha.
+ * @returns {boolean}
+ */
+function hasFurnace() {
+    return inventory[INVENTORY_KEYS.FURNACE] > ITEM_LEVEL_NONE;
+}
+
+/**
+ * Lista o que um lingote consome, na ordem em que aparece na interface.
+ * @param {{oreKey: string, orePerIngot: number, coalPerIngot: number}} recipe
+ * @returns {Array<{materialKey: string, perIngot: number}>}
+ */
+function getRecipeInputs(recipe) {
+    return [
+        { materialKey: recipe.oreKey, perIngot: recipe.orePerIngot },
+        { materialKey: MATERIAL_KEYS.COAL, perIngot: recipe.coalPerIngot },
+    ];
 }
 
 /**
@@ -60,19 +71,28 @@ function createEmptySmeltState() {
  * @returns {number}
  */
 function getMaxCraftable(recipe) {
-    const byOre = Math.floor(materials[recipe.oreKey] / recipe.orePerIngot);
-    const byCoal = Math.floor(materials.coal / recipe.coalPerIngot);
-    return Math.min(byOre, byCoal);
+    if (!hasFurnace()) {
+        return 0;
+    }
+
+    const maxCraftable = getRecipeInputs(recipe).reduce(function (limit, input) {
+        if (input.perIngot <= 0) {
+            return limit;
+        }
+
+        return Math.min(limit, Math.floor(materials[input.materialKey] / input.perIngot));
+    }, Infinity);
+
+    return maxCraftable === Infinity ? 99 : maxCraftable;
 }
 
 /**
- * Lê e valida a quantidade digitada no input de uma receita.
- * @param {string} recipeId
+ * Lê e valida a quantidade digitada no input de um forno.
+ * @param {string} slotId - Identificador do forno.
  * @returns {number}
  */
-function getInputAmount(recipeId) {
-    const input = document.querySelector(RECIPE_UI[recipeId].input);
-    const amount = Math.floor(Number(input.value));
+function getInputAmount(slotId) {
+    const amount = Math.floor(Number(slotViews.get(slotId).input.value));
 
     if (!Number.isFinite(amount) || amount < 1) {
         return 1;
@@ -82,199 +102,370 @@ function getInputAmount(recipeId) {
 }
 
 /**
- * Atualiza o custo exibido conforme a quantidade do input.
- * @param {string} recipeId
+ * Monta uma etiqueta de custo cujo número muda conforme o tamanho do lote.
+ * @param {{materialKey: string, perIngot: number}} input - Insumo da receita.
+ * @returns {{element: HTMLElement, amountElement: HTMLElement, materialKey: string, perIngot: number}}
  */
-function updateCostDisplay(recipeId) {
-    const ui = RECIPE_UI[recipeId];
-    const amount = getInputAmount(recipeId);
+function createCostChip(input) {
+    const info = getMaterialInfo(input.materialKey);
+    const element = createElement('span', 'cost-chip');
+    const amountElement = createElement('span', 'cost-chip__amount', String(input.perIngot));
 
-    document.querySelector(ui.oreCost).textContent = amount * ui.recipe.orePerIngot;
-    document.querySelector(ui.coalCost).textContent = amount * ui.recipe.coalPerIngot;
+    element.title = info.name;
+    element.appendChild(amountElement);
+    element.appendChild(createImage(info.icon, info.name, 'cost-chip__icon'));
+
+    return {
+        element,
+        amountElement,
+        materialKey: input.materialKey,
+        perIngot: input.perIngot,
+    };
 }
 
 /**
- * Atualiza o máximo fabricável e o status visual de todas as receitas.
+ * Descreve a receita em texto corrido (ex.: "2 Ouro + 4 Carvão").
+ * @param {Array<{materialKey: string, perIngot: number}>} inputs - Insumos da receita.
+ * @returns {string}
  */
-export function refreshFurnaceModal() {
-    Object.keys(RECIPE_UI).forEach(function (recipeId) {
-        const ui = RECIPE_UI[recipeId];
-        document.querySelector(ui.maxCraft).textContent = getMaxCraftable(ui.recipe);
-        updateCostDisplay(recipeId);
-        updateSmeltUi(recipeId);
+function formatRecipe(inputs) {
+    return inputs
+        .map(function (input) {
+            return input.perIngot + ' ' + getMaterialInfo(input.materialKey).name;
+        })
+        .join(' + ');
+}
+
+/**
+ * Monta o cartão de um forno e registra suas referências de DOM.
+ * @param {{id: string, recipe: Object}} slot - Forno a montar.
+ * @returns {HTMLElement}
+ */
+function createFurnaceCard(slot) {
+    const output = getMaterialInfo(slot.recipe.outputKey);
+    const inputs = getRecipeInputs(slot.recipe);
+    const seconds = Math.round(FURNACE_DURATION_MS / 1000);
+
+    const card = createElement('article', 'furnace-card');
+    const frame = createElement('div', 'furnace-card__frame');
+    frame.appendChild(createImage(output.icon, output.name, 'furnace-card__image'));
+
+    const badge = createElement('span', 'furnace-card__badge');
+
+    const titleRow = createElement('div', 'furnace-card__title-row');
+    titleRow.appendChild(createElement('h2', 'furnace-card__name', output.name));
+    titleRow.appendChild(badge);
+
+    const heading = createElement('div', 'furnace-card__heading');
+    heading.appendChild(titleRow);
+    heading.appendChild(
+        createElement(
+            'p',
+            'furnace-card__formula',
+            formatRecipe(inputs) + ' · ' + seconds + 's cada'
+        )
+    );
+
+    const header = createElement('header', 'furnace-card__header');
+    header.append(frame, heading);
+
+    const costList = createElement('div', 'cost-list');
+    const costChips = inputs.map(function (input) {
+        const chip = createCostChip(input);
+        costList.appendChild(chip.element);
+
+        return chip;
+    });
+
+    const costRow = createElement('div', 'furnace-card__row');
+    costRow.appendChild(createElement('span', 'furnace-card__label', 'Custo do lote'));
+    costRow.appendChild(costList);
+
+    const stock = createElement('span', 'furnace-card__stock', '0');
+    const stockRow = createElement('div', 'furnace-card__row');
+    stockRow.appendChild(createElement('span', 'furnace-card__label', 'Dá para fundir'));
+    stockRow.appendChild(stock);
+
+    const input = createElement('input', 'game-input');
+    input.type = 'number';
+    input.min = '1';
+    input.value = '1';
+    input.id = 'furnace-' + slot.id + '-input';
+
+    const inputWrap = createElement('div', 'game-input-wrap');
+    inputWrap.appendChild(input);
+
+    const craftButton = createElement('button', 'btn btn--action btn--compact', 'Fundir');
+    craftButton.type = 'button';
+    craftButton.id = 'furnace-' + slot.id + '-craft';
+
+    const craftAllButton = createElement('button', 'btn btn--action btn--compact', 'Tudo');
+    craftAllButton.type = 'button';
+    craftAllButton.id = 'furnace-' + slot.id + '-craft-all';
+
+    const controls = createElement('div', 'furnace-card__controls');
+    controls.append(inputWrap, craftButton, craftAllButton);
+
+    const fill = createElement('div', 'furnace-bar__fill');
+    const bar = createElement('div', 'furnace-bar');
+    bar.appendChild(fill);
+
+    const queue = createElement('span', 'furnace-card__queue');
+    const timer = createElement('span', 'furnace-card__timer', '--');
+    const status = createElement('div', 'furnace-card__status');
+    status.append(queue, timer);
+
+    const progress = createElement('div', 'furnace-card__progress');
+    progress.append(bar, status);
+
+    card.append(header, costRow, stockRow, controls, progress);
+
+    slotViews.set(slot.id, {
+        card,
+        badge,
+        costChips,
+        stock,
+        input,
+        craftButton,
+        craftAllButton,
+        fill,
+        queue,
+        timer,
+    });
+
+    return card;
+}
+
+/**
+ * Preenche o modal com um cartão por forno.
+ */
+function buildFurnaceList() {
+    const list = document.querySelector(SELECTORS.FURNACE_LIST);
+
+    FURNACE_SLOTS.forEach(function (slot) {
+        smeltStates.set(slot.id, createEmptySmeltState());
+        list.appendChild(createFurnaceCard(slot));
     });
 }
 
 /**
- * Atualiza texto, barra e botões conforme o estado da fundição.
- * @param {string} recipeId
+ * Atualiza custos, disponibilidade e estado de um forno.
+ * @param {{id: string, recipe: Object}} slot - Forno a atualizar.
  */
-function updateSmeltUi(recipeId) {
-    const ui = RECIPE_UI[recipeId];
-    const state = smeltState[recipeId];
-    const statusElement = document.querySelector(ui.status);
-    const progressFill = document.querySelector(ui.progressFill);
-    const craftButton = document.querySelector(ui.craftButton);
-    const craftAllButton = document.querySelector(ui.craftAllButton);
-    const input = document.querySelector(ui.input);
+function refreshSlot(slot) {
+    const view = slotViews.get(slot.id);
+    const state = smeltStates.get(slot.id);
+    const maxCraftable = getMaxCraftable(slot.recipe);
+    const quantity = getInputAmount(slot.id);
 
-    if (!state.isSmelting) {
-        statusElement.textContent = 'Parada';
-        progressFill.style.width = '0%';
-        craftButton.disabled = false;
-        craftAllButton.disabled = false;
-        input.disabled = false;
-        return;
+    view.stock.textContent = maxCraftable;
+
+    view.costChips.forEach(function (chip) {
+        const needed = quantity * chip.perIngot;
+
+        chip.amountElement.textContent = needed;
+        chip.element.classList.toggle(
+            'cost-chip--missing',
+            materials[chip.materialKey] < needed
+        );
+    });
+
+    if (state.isSmelting) {
+        // No instante entre o último lingote sair e a fila fechar, o índice
+        // passaria do total; o clamp evita mostrar "Lingote 4 de 3".
+        const current = Math.min(
+            state.totalIngots,
+            state.totalIngots - state.remainingIngots + 1
+        );
+
+        view.badge.textContent = 'Fundindo';
+        view.queue.textContent = 'Lingote ' + current + ' de ' + state.totalIngots;
+    } else {
+        view.badge.textContent = maxCraftable > 0 ? 'Pronta' : 'Parada';
+        view.queue.textContent =
+            maxCraftable > 0 ? 'Aguardando ordem' : 'Falta minério ou carvão';
+        view.timer.textContent = '--';
+        view.fill.style.width = '0%';
     }
 
-    const completed = state.totalIngots - state.remainingIngots;
-    statusElement.textContent =
-        'Fabricando ' + (completed + 1) + '/' + state.totalIngots;
-    craftButton.disabled = true;
-    craftAllButton.disabled = true;
-    input.disabled = true;
+    const canOrder = !state.isSmelting && maxCraftable > 0;
+
+    view.card.classList.toggle('furnace-card--active', state.isSmelting);
+    view.badge.classList.toggle('furnace-card__badge--busy', state.isSmelting);
+    view.badge.classList.toggle('furnace-card__badge--ready', canOrder);
+    setButtonAvailability(view.craftButton, canOrder);
+    setButtonAvailability(view.craftAllButton, canOrder);
+    view.input.disabled = !canOrder;
 }
 
 /**
- * Atualiza a barra de progresso do lingote atual.
- * @param {string} recipeId
+ * Atualiza todos os fornos quando o modal está visível.
  */
-function tickProgressBar(recipeId) {
-    const state = smeltState[recipeId];
+export function refreshFurnaceModal() {
+    if (!isModalVisible(document.querySelector(SELECTORS.FURNACE_MODAL))) {
+        return;
+    }
+
+    FURNACE_SLOTS.forEach(refreshSlot);
+}
+
+/**
+ * Avança a barra de progresso e o tempo restante do lingote atual.
+ * @param {string} slotId - Identificador do forno.
+ */
+function tickSmelting(slotId) {
+    const state = smeltStates.get(slotId);
 
     if (!state.isSmelting) {
         return;
     }
 
+    const view = slotViews.get(slotId);
     const elapsed = Date.now() - state.smeltStartedAt;
-    const percent = Math.min(100, (elapsed / FURNACE_DURATION_MS) * 100);
-    document.querySelector(RECIPE_UI[recipeId].progressFill).style.width = percent + '%';
+    const remaining = Math.max(0, FURNACE_DURATION_MS - elapsed);
+
+    view.fill.style.width = Math.min(100, (elapsed / FURNACE_DURATION_MS) * 100) + '%';
+    view.timer.textContent = Math.ceil(remaining / 1000) + 's';
 }
 
 /**
  * Consome materiais e inicia a fundição de uma quantidade de lingotes.
- * @param {string} recipeId
- * @param {number} amount
+ * @param {{id: string, recipe: Object}} slot - Forno acionado.
+ * @param {number} amount - Quantidade pedida.
  */
-function startSmelting(recipeId, amount) {
-    const ui = RECIPE_UI[recipeId];
-    const state = smeltState[recipeId];
-    const recipe = ui.recipe;
+function startSmelting(slot, amount) {
+    const state = smeltStates.get(slot.id);
 
-    if (state.isSmelting) {
+    if (state.isSmelting || !hasFurnace()) {
         return;
     }
 
-    const quantity = Math.min(Math.max(0, Math.floor(amount)), getMaxCraftable(recipe));
+    const requested = Math.floor(Number(amount));
+
+    if (!Number.isFinite(requested) || requested <= 0) {
+        return;
+    }
+
+    const quantity = Math.min(requested, getMaxCraftable(slot.recipe));
 
     if (quantity <= 0) {
         return;
     }
 
-    materials[recipe.oreKey] -= quantity * recipe.orePerIngot;
-    materials.coal -= quantity * recipe.coalPerIngot;
+    const costs = getRecipeInputs(slot.recipe).map(function (input) {
+        return { materialKey: input.materialKey, amount: quantity * input.perIngot };
+    });
+
+    if (!spendMaterials(costs)) {
+        return;
+    }
+
     refreshHud();
 
     state.isSmelting = true;
     state.remainingIngots = quantity;
     state.totalIngots = quantity;
-    document.querySelector(ui.input).value = 1;
+    slotViews.get(slot.id).input.value = 1;
     refreshFurnaceModal();
-    smeltNextIngot(recipeId);
+    smeltNextIngot(slot);
 }
 
 /**
- * Inicia o timer de 15s para o próximo lingote da fila.
- * @param {string} recipeId
+ * Inicia a contagem do próximo lingote da fila.
+ * @param {{id: string, recipe: Object}} slot - Forno em operação.
  */
-function smeltNextIngot(recipeId) {
-    const ui = RECIPE_UI[recipeId];
-    const state = smeltState[recipeId];
-    const recipe = ui.recipe;
+function smeltNextIngot(slot) {
+    const state = smeltStates.get(slot.id);
 
     if (state.remainingIngots <= 0) {
-        finishSmelting(recipeId);
+        finishSmelting(slot);
         return;
     }
 
     state.smeltStartedAt = Date.now();
-    updateSmeltUi(recipeId);
+    refreshFurnaceModal();
 
-    clearInterval(state.progressTimerId);
-    state.progressTimerId = setInterval(function () {
-        tickProgressBar(recipeId);
-    }, 100);
+    clearInterval(state.tickTimerId);
+    state.tickTimerId = setInterval(function () {
+        tickSmelting(slot.id);
+    }, TICK_INTERVAL_MS);
 
     clearTimeout(state.smeltTimerId);
     state.smeltTimerId = setTimeout(function () {
-        materials[recipe.outputKey] += 1;
+        addMaterial(slot.recipe.outputKey, 1);
         state.remainingIngots -= 1;
+        slotViews.get(slot.id).fill.style.width = '100%';
         refreshHud();
-        document.querySelector(ui.maxCraft).textContent = getMaxCraftable(recipe);
-        document.querySelector(ui.progressFill).style.width = '100%';
 
         if (state.remainingIngots > 0) {
-            smeltNextIngot(recipeId);
+            smeltNextIngot(slot);
         } else {
-            finishSmelting(recipeId);
+            finishSmelting(slot);
         }
     }, FURNACE_DURATION_MS);
 }
 
 /**
- * Finaliza a fundição e libera a interface.
- * @param {string} recipeId
+ * Finaliza a fundição e libera a interface do forno.
+ * @param {{id: string, recipe: Object}} slot - Forno a liberar.
  */
-function finishSmelting(recipeId) {
-    const state = smeltState[recipeId];
+function finishSmelting(slot) {
+    const state = smeltStates.get(slot.id);
 
-    state.isSmelting = false;
-    state.remainingIngots = 0;
-    state.totalIngots = 0;
     clearTimeout(state.smeltTimerId);
-    clearInterval(state.progressTimerId);
-    state.smeltTimerId = null;
-    state.progressTimerId = null;
+    clearInterval(state.tickTimerId);
+    smeltStates.set(slot.id, createEmptySmeltState());
     refreshFurnaceModal();
+}
+
+/**
+ * Interrompe todas as fundições em andamento e limpa os timers.
+ */
+export function resetFurnace() {
+    FURNACE_SLOTS.forEach(finishSmelting);
 }
 
 /**
  * Abre o modal da fornalha.
  */
 export function openFurnace() {
+    if (!hasFurnace()) {
+        return;
+    }
+
     openModal(document.querySelector(SELECTORS.FURNACE_MODAL));
 
-    Object.keys(RECIPE_UI).forEach(function (recipeId) {
-        document.querySelector(RECIPE_UI[recipeId].input).value = 1;
+    FURNACE_SLOTS.forEach(function (slot) {
+        if (!smeltStates.get(slot.id).isSmelting) {
+            slotViews.get(slot.id).input.value = 1;
+        }
     });
 
     refreshFurnaceModal();
 }
 
 /**
- * Registra clique na fornalha e controles do modal.
+ * Monta o modal da fornalha e registra seus controles.
  */
 export function initFurnace() {
-    const furnaceTrigger = document.querySelector(SELECTORS.FURNACE_TRIGGER);
+    buildFurnaceList();
+    bindTrustedClick(document.querySelector(SELECTORS.FURNACE_TRIGGER), openFurnace);
 
-    furnaceTrigger.addEventListener('click', openFurnace);
+    FURNACE_SLOTS.forEach(function (slot) {
+        const view = slotViews.get(slot.id);
 
-    Object.keys(RECIPE_UI).forEach(function (recipeId) {
-        const ui = RECIPE_UI[recipeId];
-        const input = document.querySelector(ui.input);
-        const craftButton = document.querySelector(ui.craftButton);
-        const craftAllButton = document.querySelector(ui.craftAllButton);
-
-        input.addEventListener('input', function () {
-            updateCostDisplay(recipeId);
+        view.input.addEventListener('input', function () {
+            refreshSlot(slot);
         });
 
-        craftButton.addEventListener('click', function () {
-            startSmelting(recipeId, getInputAmount(recipeId));
+        bindTrustedClick(view.craftButton, function () {
+            startSmelting(slot, getInputAmount(slot.id));
         });
 
-        craftAllButton.addEventListener('click', function () {
-            startSmelting(recipeId, getMaxCraftable(ui.recipe));
+        bindTrustedClick(view.craftAllButton, function () {
+            startSmelting(slot, getMaxCraftable(slot.recipe));
         });
     });
+
+    onGameStateChanged(refreshFurnaceModal);
 }

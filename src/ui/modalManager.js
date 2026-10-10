@@ -1,68 +1,48 @@
-import {
-    DISPLAY,
-    SELECTORS,
-} from '../utils/constants.js';
-import { isModalVisible } from '../utils/helpers.js';
+import { SELECTORS, MODAL_OPEN_CLASS, BODY_MODAL_OPEN_CLASS } from '../utils/constants.js';
+import { bindTrustedClick } from '../utils/security.js';
 
-/** Referências aos modais do jogo. */
-let shopModal;
-let crafterModal;
-let settingsModal;
-let inventoryModal;
-let sellModal;
-let furnaceModal;
+/** Referências a todos os modais do jogo. */
+let modals = [];
 
 /**
  * Armazena referências aos modais e registra botões de fechar.
  */
 export function initModals() {
-    shopModal = document.querySelector(SELECTORS.SHOP_MODAL);
-    crafterModal = document.querySelector(SELECTORS.CRAFTER_MODAL);
-    settingsModal = document.querySelector(SELECTORS.SETTINGS_MODAL);
-    inventoryModal = document.querySelector(SELECTORS.INVENTORY_MODAL);
-    sellModal = document.querySelector(SELECTORS.SELL_MODAL);
-    furnaceModal = document.querySelector(SELECTORS.FURNACE_MODAL);
+    modals = [
+        SELECTORS.SHOP_MODAL,
+        SELECTORS.CRAFTER_MODAL,
+        SELECTORS.SETTINGS_MODAL,
+        SELECTORS.INVENTORY_MODAL,
+        SELECTORS.SELL_MODAL,
+        SELECTORS.FURNACE_MODAL,
+        SELECTORS.AUTOMATION_MODAL,
+    ].map(function (selector) {
+        return document.querySelector(selector);
+    });
 
     const closeButtons = document.querySelectorAll(SELECTORS.MODAL_CLOSE);
 
     closeButtons.forEach(function (button) {
-        button.addEventListener('click', closeActiveModal);
+        bindTrustedClick(button, closeActiveModal);
     });
-
-    const settingsTrigger = document.querySelector(SELECTORS.SETTINGS_TRIGGER);
-    settingsTrigger.addEventListener('click', openSettings);
 }
 
 /**
- * Exibe um modal na tela.
+ * Exibe um modal na tela, fechando qualquer outro que esteja aberto.
  * @param {HTMLElement} modalElement - Elemento do modal a abrir.
  */
 export function openModal(modalElement) {
-    modalElement.style.display = DISPLAY.BLOCK;
+    closeActiveModal();
+    modalElement.classList.add(MODAL_OPEN_CLASS);
+    document.body.classList.add(BODY_MODAL_OPEN_CLASS);
 }
 
 /**
  * Fecha o modal que estiver aberto no momento.
  */
 export function closeActiveModal() {
-    if (isModalVisible(shopModal)) {
-        shopModal.style.display = DISPLAY.NONE;
-    } else if (isModalVisible(crafterModal)) {
-        crafterModal.style.display = DISPLAY.NONE;
-    } else if (isModalVisible(settingsModal)) {
-        settingsModal.style.display = DISPLAY.NONE;
-    } else if (isModalVisible(inventoryModal)) {
-        inventoryModal.style.display = DISPLAY.NONE;
-    } else if (isModalVisible(sellModal)) {
-        sellModal.style.display = DISPLAY.NONE;
-    } else if (isModalVisible(furnaceModal)) {
-        furnaceModal.style.display = DISPLAY.NONE;
-    }
-}
-
-/**
- * Abre o modal de configurações.
- */
-export function openSettings() {
-    openModal(settingsModal);
+    modals.forEach(function (modalElement) {
+        modalElement.classList.remove(MODAL_OPEN_CLASS);
+    });
+    document.body.classList.remove(BODY_MODAL_OPEN_CLASS);
 }

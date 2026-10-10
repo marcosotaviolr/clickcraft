@@ -7,6 +7,9 @@ DirectoryIndex index.html
 # Evita listagem de pastas
 Options -Indexes
 
+# Não expõe a versão do Apache nas páginas de erro
+ServerSignature Off
+
 # Charset padrão
 AddDefaultCharset UTF-8
 
@@ -37,6 +40,9 @@ AddType font/woff2 .woff2
     # Se a URL for uma pasta, serve o index.html dela
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^(.+)/$ $1/index.html [L]
+
+    # Bloqueia pastas de controle de versão e metadados do editor
+    RewriteRule (^|/)\.(git|hg|svn|cursor|vscode|idea)(/|$) - [F,L]
 </IfModule>
 
 # Compressão GZIP
@@ -62,16 +68,25 @@ AddType font/woff2 .woff2
     ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
 
-# Cabeçalhos de segurança básicos
+# Cabeçalhos de segurança
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # Fonte do jogo fica em assets/fonts; CSS e JS só vêm do próprio domínio.
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
 </IfModule>
 
 # Bloqueia acesso a arquivos sensíveis, se existirem
-<FilesMatch "(^\.env|\.git|\.gitignore|\.htaccess)">
+<FilesMatch "^\.|\.(env|ini|log|sh|bak|sql|md|json|yml|yaml)$">
     <IfModule mod_authz_core.c>
         Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
     </IfModule>
 </FilesMatch>

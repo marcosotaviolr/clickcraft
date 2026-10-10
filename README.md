@@ -1,59 +1,68 @@
 # 🏝️ ClickCraft
 
-Jogo de farm/clicker baseado em ilhas, feito com HTML, CSS e JavaScript puro (sem build e sem framework).
+Jogo idle/clicker de fazenda em ilhas, feito com HTML, CSS e JavaScript puro (sem build e sem framework).
 
-## 🎮 Sobre
+Você coleta recursos, vende materiais, compra blueprints, fabrica ferramentas, libera ilhas e, no fim, compra autômatos que coletam sozinhos.
 
-Você começa na ilha inicial coletando recursos, vende materiais, compra blueprints, fabrica ferramentas e libera novas ilhas. Há fornalha para fundir lingotes e progressão de madeira → pedra → ferro → ouro → diamante.
+Documentação completa do jogo e do código: [JOGO.md](JOGO.md).
 
 ## 🕹️ Como jogar
 
 - Clique nos recursos do mapa para coletar
-- Use a **Loja de Venda** para vender materiais e ganhar moedas
-- Use o **Shop** para comprar blueprints
-- Use o **Crafter** para fabricar ferramentas e a fornalha
-- Melhore machado/picareta para aumentar o ganho por clique e liberar minérios
-- Desbloqueie a **Ilha 2** para ferro, carvão e ouro
-- Use a **Fornalha** para transformar minérios + carvão em lingotes
-- Desbloqueie a **Ilha 3** para autômatos
+- Venda materiais na **Loja de Venda** para ganhar moedas
+- Compre blueprints no **Shop** e fabrique no **Crafter**
+- Suba machado e picareta (madeira → pedra → ferro → ouro → diamante)
+- Liberte a **Ilha 2** para minérios (ferro, carvão, ouro e diamante) e a **fornalha**
+- Liberte a **Ilha 3** para a loja de **automações**
 
-## ⚙️ Como rodar localmente
+O progresso **não é salvo**: recarregar a página recomeça o jogo.
 
-Como o projeto usa módulos ES (`type="module"`), abra com um servidor local — abrir o HTML direto pelo `file://` pode falhar.
+## Como rodar localmente
 
-Exemplos:
+O projeto usa módulos ES (`type="module"`). Abra com um servidor local — `file://` pode falhar.
 
 ```bash
-# Python
 python -m http.server 5500
-
-# VS Code / Cursor: extensão Live Server
 ```
 
-Depois acesse `http://localhost:5500`.
+Acesse `http://localhost:5500`. No Cursor/VS Code, a extensão Live Server também funciona.
+
+## Publicar no GitHub
+
+1. Confirme que `TEST_ECONOMY` em `src/utils/constants.js` está `false` (preços reais do jogo).
+2. Não envie `.env`, chaves nem a pasta `.git` para a hospedagem.
+3. Crie o repositório no GitHub e faça o push da branch principal.
+
+O `.gitignore` já ignora artefatos de editor, `.env` e previews em `tools/shots/`.
 
 ## 🚀 Deploy (HostGator / FTP)
 
-1. Envie os arquivos em modo **Binary** no FTP (importante para `.png`)
-2. Mantenha a estrutura de pastas (`index.html`, `assets/`, `src/`, `.htaccess`)
-3. Os nomes das imagens estão em **minúsculas** (necessário no Linux)
-4. Após atualizar, faça hard refresh ou teste em aba anônima (cache de CSS/imagens)
+1. Envie os arquivos em modo **Binary** no FTP (importante para `.png`).
+2. Mantenha a estrutura (`index.html`, `assets/`, `src/`, `.htaccess`).
+3. Nomes de imagens em **minúsculas** (o Linux diferencia maiúsculas).
+4. Depois de atualizar, use hard refresh ou aba anônima (cache de CSS/imagens).
+5. O `.htaccess` força HTTPS — o SSL do domínio precisa estar ativo.
+
+GitHub Pages **não** usa `.htaccess`. Para o site público, use a HostGator (ou outro Apache) com essa pasta.
 
 ## 📁 Estrutura
 
 ```
 clickcraft/
 ├── index.html
+├── JOGO.md
 ├── .htaccess
 ├── assets/
+│   ├── fonts/
 │   ├── img/
 │   └── styles/
-└── src/
-    ├── core/
-    ├── entities/
-    ├── systems/
-    ├── ui/
-    └── utils/
+├── src/
+│   ├── core/
+│   ├── entities/
+│   ├── systems/
+│   ├── ui/
+│   └── utils/
+└── tools/
 ```
 
 ## 🛠️ Tecnologias
@@ -62,9 +71,9 @@ clickcraft/
 - CSS3
 - JavaScript (Vanilla, ES Modules)
 
-## 🤖 Uso de Inteligência Artificial
+## Licença
 
-Este projeto foi desenvolvido como um experimento de aprendizado com uso intensivo de IA. Ferramentas utilizadas:
+MIT — veja [LICENSE](LICENSE).
 
 - **Claude (Anthropic)** — suporte no aprendizado de HTML, CSS e JavaScript, revisão de lógica e guia de desenvolvimento ao longo de todo o projeto
 - **Google Gemini** — geração de todos os assets visuais do jogo (sprites, ícones, cursores e texturas) via prompts de pixel art
@@ -78,4 +87,4 @@ Este projeto foi desenvolvido como um experimento de aprendizado com uso intensi
 
 ## 👤 Créditos
 
-Desenvolvido por **Marcos** ([@marcosotaviolr](https://github.com/marcosotaviolr))
+Desenvolvido por **Marcos** ([@marcosotaviolr](https://github.com/marcosotaviolr)).

@@ -1,0 +1,193 @@
+/* Estilos do modal de configurações — herda de .modal */
+
+.settings {
+    padding: 18px 30px 22px 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.settings-card {
+    background-color: #00000038;
+    border: 3px solid #7a3a12;
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.settings-card--wide {
+    grid-column: 1 / -1;
+}
+
+.settings-card__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffd79a;
+    border-bottom: 2px solid #00000038;
+    padding-bottom: 8px;
+}
+
+.settings-list,
+.settings-steps {
+    padding-left: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.settings-list li,
+.settings-steps li {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #fff;
+}
+
+.settings-list strong,
+.settings-steps strong {
+    color: #ffd79a;
+}
+
+.settings-list em {
+    color: #ffd79a;
+    font-style: normal;
+}
+
+/* ---- Preferências ---- */
+
+.settings-card--wide {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 22px;
+}
+
+.settings-card--wide .settings-card__title {
+    grid-column: 1 / -1;
+}
+
+.settings-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.settings-option__text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.settings-option__name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.settings-option__hint {
+    font-size: 13px;
+    line-height: 1.45;
+    color: #ffe9c9;
+}
+
+.toggle {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #00000055;
+    border: 3px solid #7a3a12;
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 150px;
+    cursor: pointer;
+    transition: border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.toggle:hover {
+    border-color: #ffb347;
+}
+
+.toggle--on {
+    border-color: #4ddc5b;
+    background-color: #1c6b2740;
+    color: #8bf299;
+}
+
+.toggle--danger {
+    border-color: #a33;
+}
+
+.toggle--danger:hover {
+    border-color: #ff6b6b;
+}
+
+.btn--confirm {
+    background-color: #a3231f;
+    border-color: #ff6b6b;
+    color: #fff;
+}
+
+/* ---- Tabela de preços ---- */
+
+.price-table {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.price-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #00000030;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.price-row__icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.price-row__name {
+    font-size: 14px;
+    color: #fff;
+    flex: 1;
+}
+
+.price-row__value {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffd79a;
+}
+
+.price-row__coin {
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 900px) {
+    .settings {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-card--wide {
+        grid-template-columns: 1fr;
+    }
+
+    .price-table {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-option {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

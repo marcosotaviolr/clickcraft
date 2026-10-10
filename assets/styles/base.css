@@ -1,4 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+﻿@font-face {
+    font-family: "Nunito";
+    src: url("../fonts/nunito.woff2") format("woff2");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    /* Verde = ação liberada, cinza = faltam recursos, vermelho = alerta. */
+    --color-ready: #3f9e3a;
+    --color-ready-light: #56c94f;
+    --color-ready-dark: #1f6a1c;
+    --color-blocked: #6b6560;
+    --color-blocked-dark: #423e3a;
+    --color-danger: #b7332b;
+    --color-danger-dark: #6d1b16;
+    --color-missing: #ff8a7a;
+
+    /* Superfícies internas dos modais, sobre o marrom da madeira. */
+    --surface: rgba(0, 0, 0, 0.22);
+    --surface-strong: rgba(0, 0, 0, 0.32);
+    --surface-border: rgba(0, 0, 0, 0.35);
+    --surface-frame: rgba(255, 255, 255, 0.12);
+
+    --text-main: #ffffff;
+    --text-soft: #f3e6d8;
+    --text-accent: #ffd9a8;
+    --text-value: #ffd76e;
+}
 
 * {
     margin: 0;
@@ -6,32 +35,100 @@
 }
 
 body {
-    font-family: "Press Start 2P", cursive;
+    font-family: "Nunito", "Trebuchet MS", sans-serif;
     font-weight: 400;
     font-style: normal;
-    background-color: #00d9ff;
+    color: var(--text-main);
+    background-color: #5ec8ef;
+}
+
+.sea {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("../img/agua.png");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+    image-rendering: pixelated;
 }
 
 p {
     line-height: 1.5;
 }
 
-/* ---- Utilitários de layout ---- */
-
-.flex-center {
+/*
+ * O Chrome corta o topo do glifo quando o texto do input encosta na borda
+ * do content box. Por isso a moldura visual (fundo, borda, padding) fica no
+ * wrapper e o input em si é transparente e sem borda.
+ */
+.game-input-wrap {
+    box-sizing: border-box;
     display: flex;
-    justify-content: center;
     align-items: center;
+    width: 80px;
+    height: 46px;
+    padding: 8px 6px;
+    background-color: #f6e3cc;
+    border: 3px solid var(--surface-border);
+    border-radius: 10px;
 }
 
-.flex-column {
-    display: flex;
-    flex-direction: column;
+.game-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    color: #3a1d08;
+    -moz-appearance: textfield;
+    appearance: textfield;
 }
 
-.flex-between {
-    display: flex;
-    justify-content: space-between;
+.game-input:focus {
+    outline: none;
+}
+
+.game-input::-webkit-outer-spin-button,
+.game-input::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+}
+
+.game-input-wrap:has(.game-input:disabled) {
+    opacity: 0.55;
+}
+
+.game-input:disabled {
+    cursor: not-allowed;
+}
+
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background-color: rgba(0, 25, 45, 0.45);
+    pointer-events: none;
+}
+
+body.is-modal-open .modal-backdrop {
+    display: block;
+}
+
+body.is-modal-open .sea,
+body.is-modal-open .island-map {
+    filter: blur(6px);
+}
+
+body.is-modal-open .island-map {
+    pointer-events: none;
 }
 
 /* ---- Utilitários de ícone ---- */
@@ -62,62 +159,11 @@ p {
 }
 
 .panel__title {
-    font-size: 22px;
+    font-size: 18px;
+    font-weight: 700;
     padding-bottom: 15px;
 }
 
 .panel__label {
     padding: 3px;
-}
-
-/* ---- Botões ---- */
-
-.btn {
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.btn--primary {
-    width: 100px;
-    height: 60px;
-    margin-top: 15px;
-    margin-right: 20px;
-}
-
-.btn--secondary {
-    width: 90px;
-    height: 35px;
-    margin-right: 20px;
-    margin-top: 5px;
-}
-
-.btn--danger {
-    z-index: 20;
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    top: 12px;
-    right: 10px;
-    background-color: red;
-}
-
-/* ---- Texto auxiliar ---- */
-
-.text-indent {
-    padding-left: 30px;
-}
-
-.text-indent--sm {
-    padding-left: 10px;
-}
-
-.section-heading {
-    padding: 10px;
-}
-
-.instruction-list {
-    padding-left: 25px;
-    font-size: 17px;
-    line-height: 1.5;
 }

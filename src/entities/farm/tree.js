@@ -1,4 +1,5 @@
-import { materials } from '../../core/state.js';
+import { addMaterial } from '../../core/state.js';
+import { MATERIAL_KEYS } from '../../utils/constants.js';
 import { getWoodHarvestAmount } from '../player.js';
 import { refreshHud } from '../../ui/hudManager.js';
 import { showClickPopup } from '../../ui/clickPopup.js';
@@ -9,7 +10,11 @@ import { showClickPopup } from '../../ui/clickPopup.js';
  */
 export function harvestTree(event) {
     const amount = getWoodHarvestAmount();
-    materials.wood += amount;
+
+    if (!addMaterial(MATERIAL_KEYS.WOOD, amount)) {
+        return;
+    }
+
     refreshHud();
     showClickPopup(amount, event.currentTarget);
 }

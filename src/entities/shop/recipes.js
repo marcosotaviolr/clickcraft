@@ -6,10 +6,12 @@ import {
     ITEM_LEVEL_WOOD,
     ITEM_LEVEL_STONE,
     ITEM_LEVEL_IRON,
+    ITEM_LEVEL_GOLD,
 } from '../../utils/constants.js';
+import { deepFreeze } from '../../utils/freeze.js';
 
-/** Definições das receitas de craft disponíveis. */
-export const craftRecipes = [
+/** Receitas de craft, com os dados de exibição usados pelo Crafter. */
+export const craftRecipes = deepFreeze([
     {
         itemKey: INVENTORY_KEYS.AXE,
         costs: [{ materialKey: MATERIAL_KEYS.WOOD, amount: CRAFT_COSTS.AXE_WOOD }],
@@ -17,6 +19,9 @@ export const craftRecipes = [
         rowSelector: '#craft-item-axe-wood',
         buttonSelector: '#craft-axe-wood',
         blueprintKey: INVENTORY_KEYS.AXE_BLUEPRINT,
+        title: 'Machado de Madeira',
+        description: 'Coleta 2 madeiras por clique',
+        image: 'assets/img/machadomadeira.png',
     },
     {
         itemKey: INVENTORY_KEYS.PICKAXE,
@@ -25,6 +30,9 @@ export const craftRecipes = [
         rowSelector: '#craft-item-pickaxe-wood',
         buttonSelector: '#craft-pickaxe-wood',
         blueprintKey: INVENTORY_KEYS.PICKAXE_BLUEPRINT,
+        title: 'Picareta de Madeira',
+        description: 'Libera a mineração de pedra',
+        image: 'assets/img/picaretamadeira.png',
     },
     {
         itemKey: INVENTORY_KEYS.FURNACE,
@@ -33,6 +41,9 @@ export const craftRecipes = [
         rowSelector: '#craft-item-furnace',
         buttonSelector: '#craft-furnace',
         blueprintKey: INVENTORY_KEYS.FURNACE_BLUEPRINT,
+        title: 'Fornalha',
+        description: 'Coloca uma fornalha na ilha inicial',
+        image: 'assets/img/fornalha.png',
     },
     {
         itemKey: INVENTORY_KEYS.AXE,
@@ -44,6 +55,9 @@ export const craftRecipes = [
         rowSelector: '#craft-item-axe-stone',
         buttonSelector: '#craft-axe-stone',
         blueprintKey: INVENTORY_KEYS.AXE_STONE_BLUEPRINT,
+        title: 'Machado de Pedra',
+        description: 'Coleta 3 madeiras por clique',
+        image: 'assets/img/axe.png',
     },
     {
         itemKey: INVENTORY_KEYS.PICKAXE,
@@ -55,6 +69,9 @@ export const craftRecipes = [
         rowSelector: '#craft-item-pickaxe-stone',
         buttonSelector: '#craft-pickaxe-stone',
         blueprintKey: INVENTORY_KEYS.PICKAXE_STONE_BLUEPRINT,
+        title: 'Picareta de Pedra',
+        description: 'Coleta 2 pedras e libera ferro e carvão',
+        image: 'assets/img/picaxe.png',
     },
     {
         itemKey: INVENTORY_KEYS.AXE,
@@ -66,6 +83,9 @@ export const craftRecipes = [
         rowSelector: '#craft-item-axe-iron',
         buttonSelector: '#craft-axe-iron',
         blueprintKey: INVENTORY_KEYS.AXE_IRON_BLUEPRINT,
+        title: 'Machado de Ferro',
+        description: 'Coleta 4 madeiras por clique',
+        image: 'assets/img/machadoferro.png',
     },
     {
         itemKey: INVENTORY_KEYS.PICKAXE,
@@ -77,6 +97,9 @@ export const craftRecipes = [
         rowSelector: '#craft-item-pickaxe-iron',
         buttonSelector: '#craft-pickaxe-iron',
         blueprintKey: INVENTORY_KEYS.PICKAXE_IRON_BLUEPRINT,
+        title: 'Picareta de Ferro',
+        description: '3 pedras, 2 ferros, 2 carvões e libera o ouro',
+        image: 'assets/img/picaretaferro.png',
     },
     {
         itemKey: INVENTORY_KEYS.AXE,
@@ -88,6 +111,9 @@ export const craftRecipes = [
         rowSelector: '#craft-item-axe-gold',
         buttonSelector: '#craft-axe-gold',
         blueprintKey: INVENTORY_KEYS.AXE_GOLD_BLUEPRINT,
+        title: 'Machado de Ouro',
+        description: 'Coleta 5 madeiras por clique',
+        image: 'assets/img/machadoouro.png',
     },
     {
         itemKey: INVENTORY_KEYS.PICKAXE,
@@ -99,5 +125,36 @@ export const craftRecipes = [
         rowSelector: '#craft-item-pickaxe-gold',
         buttonSelector: '#craft-pickaxe-gold',
         blueprintKey: INVENTORY_KEYS.PICKAXE_GOLD_BLUEPRINT,
+        title: 'Picareta de Ouro',
+        description: '4 pedras, 3 ferros, 3 carvões, 2 ouros e libera diamante',
+        image: 'assets/img/picaretaouro.png',
     },
-];
+    {
+        itemKey: INVENTORY_KEYS.AXE,
+        costs: [
+            { materialKey: MATERIAL_KEYS.WOOD, amount: CRAFT_COSTS.AXE_DIAMOND_WOOD },
+            { materialKey: MATERIAL_KEYS.DIAMOND, amount: CRAFT_COSTS.AXE_DIAMOND },
+        ],
+        requiredLevel: ITEM_LEVEL_GOLD,
+        rowSelector: '#craft-item-axe-diamond',
+        buttonSelector: '#craft-axe-diamond',
+        blueprintKey: INVENTORY_KEYS.AXE_DIAMOND_BLUEPRINT,
+        title: 'Machado de Diamante',
+        description: 'Coleta 6 madeiras por clique',
+        image: 'assets/img/machadodiamante.png',
+    },
+    {
+        itemKey: INVENTORY_KEYS.PICKAXE,
+        costs: [
+            { materialKey: MATERIAL_KEYS.WOOD, amount: CRAFT_COSTS.PICKAXE_DIAMOND_WOOD },
+            { materialKey: MATERIAL_KEYS.DIAMOND, amount: CRAFT_COSTS.PICKAXE_DIAMOND },
+        ],
+        requiredLevel: ITEM_LEVEL_GOLD,
+        rowSelector: '#craft-item-pickaxe-diamond',
+        buttonSelector: '#craft-pickaxe-diamond',
+        blueprintKey: INVENTORY_KEYS.PICKAXE_DIAMOND_BLUEPRINT,
+        title: 'Picareta de Diamante',
+        description: '5 pedras, 4 ferros, 4 carvões, 3 ouros e 2 diamantes por clique',
+        image: 'assets/img/picaretadiamante.png',
+    },
+]);

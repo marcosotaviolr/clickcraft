@@ -5,10 +5,19 @@ import {
     ITEM_LEVEL_WOOD,
     ITEM_LEVEL_STONE,
     ITEM_LEVEL_IRON,
+    ITEM_LEVEL_GOLD,
 } from '../../utils/constants.js';
+import { deepFreeze } from '../../utils/freeze.js';
 
-/** Definições dos produtos disponíveis na loja. */
-export const shopProducts = [
+const BLUEPRINT_AXE_IMAGE = 'assets/img/blueprint-axe.png';
+const BLUEPRINT_PICKAXE_IMAGE = 'assets/img/blueprint-picaxe.png';
+
+/**
+ * Produtos da loja. Preço, texto e imagem ficam aqui para que a loja seja
+ * montada a partir dos dados — o HTML não repete valores que possam
+ * divergir da tabela de preços.
+ */
+export const shopProducts = deepFreeze([
     {
         itemKey: INVENTORY_KEYS.AXE_BLUEPRINT,
         price: SHOP_PRICES.AXE_BLUEPRINT,
@@ -17,6 +26,9 @@ export const shopProducts = [
         buttonSelector: '#buy-axe-wood',
         requiresIslandSecond: false,
         requiredToolsLevel: ITEM_LEVEL_NONE,
+        title: 'Machado de Madeira',
+        description: 'Coleta 2 madeiras por clique',
+        image: BLUEPRINT_AXE_IMAGE,
     },
     {
         itemKey: INVENTORY_KEYS.PICKAXE_BLUEPRINT,
@@ -26,6 +38,9 @@ export const shopProducts = [
         buttonSelector: '#buy-pickaxe-wood',
         requiresIslandSecond: false,
         requiredToolsLevel: ITEM_LEVEL_NONE,
+        title: 'Picareta de Madeira',
+        description: 'Libera a mineração de pedra',
+        image: BLUEPRINT_PICKAXE_IMAGE,
     },
     {
         itemKey: INVENTORY_KEYS.FURNACE_BLUEPRINT,
@@ -35,6 +50,9 @@ export const shopProducts = [
         buttonSelector: '#buy-furnace',
         requiresIslandSecond: true,
         requiredToolsLevel: ITEM_LEVEL_NONE,
+        title: 'Fornalha',
+        description: 'Permite fundir minérios na ilha inicial',
+        image: 'assets/img/bluefornalha.png',
     },
     {
         itemKey: INVENTORY_KEYS.AXE_STONE_BLUEPRINT,
@@ -44,6 +62,9 @@ export const shopProducts = [
         buttonSelector: '#buy-axe-stone',
         requiresIslandSecond: false,
         requiredToolsLevel: ITEM_LEVEL_WOOD,
+        title: 'Machado de Pedra',
+        description: 'Coleta 3 madeiras por clique',
+        image: BLUEPRINT_AXE_IMAGE,
     },
     {
         itemKey: INVENTORY_KEYS.PICKAXE_STONE_BLUEPRINT,
@@ -53,6 +74,9 @@ export const shopProducts = [
         buttonSelector: '#buy-pickaxe-stone',
         requiresIslandSecond: false,
         requiredToolsLevel: ITEM_LEVEL_WOOD,
+        title: 'Picareta de Pedra',
+        description: 'Coleta 2 pedras e libera ferro e carvão',
+        image: BLUEPRINT_PICKAXE_IMAGE,
     },
     {
         itemKey: INVENTORY_KEYS.AXE_IRON_BLUEPRINT,
@@ -62,6 +86,9 @@ export const shopProducts = [
         buttonSelector: '#buy-axe-iron',
         requiresIslandSecond: false,
         requiredToolsLevel: ITEM_LEVEL_STONE,
+        title: 'Machado de Ferro',
+        description: 'Coleta 4 madeiras por clique',
+        image: BLUEPRINT_AXE_IMAGE,
     },
     {
         itemKey: INVENTORY_KEYS.PICKAXE_IRON_BLUEPRINT,
@@ -71,6 +98,9 @@ export const shopProducts = [
         buttonSelector: '#buy-pickaxe-iron',
         requiresIslandSecond: false,
         requiredToolsLevel: ITEM_LEVEL_STONE,
+        title: 'Picareta de Ferro',
+        description: '3 pedras, 2 ferros, 2 carvões e libera o ouro',
+        image: BLUEPRINT_PICKAXE_IMAGE,
     },
     {
         itemKey: INVENTORY_KEYS.AXE_GOLD_BLUEPRINT,
@@ -80,6 +110,9 @@ export const shopProducts = [
         buttonSelector: '#buy-axe-gold',
         requiresIslandSecond: false,
         requiredToolsLevel: ITEM_LEVEL_IRON,
+        title: 'Machado de Ouro',
+        description: 'Coleta 5 madeiras por clique',
+        image: BLUEPRINT_AXE_IMAGE,
     },
     {
         itemKey: INVENTORY_KEYS.PICKAXE_GOLD_BLUEPRINT,
@@ -89,5 +122,32 @@ export const shopProducts = [
         buttonSelector: '#buy-pickaxe-gold',
         requiresIslandSecond: false,
         requiredToolsLevel: ITEM_LEVEL_IRON,
+        title: 'Picareta de Ouro',
+        description: '4 pedras, 3 ferros, 3 carvões, 2 ouros e libera diamante',
+        image: BLUEPRINT_PICKAXE_IMAGE,
     },
-];
+    {
+        itemKey: INVENTORY_KEYS.AXE_DIAMOND_BLUEPRINT,
+        price: SHOP_PRICES.AXE_DIAMOND_BLUEPRINT,
+        requiredLevel: ITEM_LEVEL_NONE,
+        rowSelector: '#shop-item-axe-diamond',
+        buttonSelector: '#buy-axe-diamond',
+        requiresIslandSecond: false,
+        requiredToolsLevel: ITEM_LEVEL_GOLD,
+        title: 'Machado de Diamante',
+        description: 'Coleta 6 madeiras por clique',
+        image: BLUEPRINT_AXE_IMAGE,
+    },
+    {
+        itemKey: INVENTORY_KEYS.PICKAXE_DIAMOND_BLUEPRINT,
+        price: SHOP_PRICES.PICKAXE_DIAMOND_BLUEPRINT,
+        requiredLevel: ITEM_LEVEL_NONE,
+        rowSelector: '#shop-item-pickaxe-diamond',
+        buttonSelector: '#buy-pickaxe-diamond',
+        requiresIslandSecond: false,
+        requiredToolsLevel: ITEM_LEVEL_GOLD,
+        title: 'Picareta de Diamante',
+        description: '5 pedras, 4 ferros, 4 carvões, 3 ouros e 2 diamantes por clique',
+        image: BLUEPRINT_PICKAXE_IMAGE,
+    },
+]);
