@@ -1,4 +1,4 @@
-# ClickCraft
+# 🏝️ ClickCraft
 
 Jogo idle/clicker de fazenda em ilhas, feito com HTML, CSS e JavaScript puro (sem build e sem framework).
 
@@ -6,7 +6,7 @@ Você coleta recursos, vende materiais, compra blueprints, fabrica ferramentas, 
 
 Documentação completa do jogo e do código: [JOGO.md](JOGO.md).
 
-## Como jogar
+## 🕹️ Como jogar
 
 - Clique nos recursos do mapa para coletar
 - Venda materiais na **Loja de Venda** para ganhar moedas
@@ -35,7 +35,7 @@ Acesse `http://localhost:5500`. No Cursor/VS Code, a extensão Live Server tamb�
 
 O `.gitignore` já ignora artefatos de editor, `.env` e previews em `tools/shots/`.
 
-## Deploy (HostGator / FTP)
+## 🚀 Deploy (HostGator / FTP)
 
 1. Envie os arquivos em modo **Binary** no FTP (importante para `.png`).
 2. Mantenha a estrutura (`index.html`, `assets/`, `src/`, `.htaccess`).
@@ -45,7 +45,7 @@ O `.gitignore` já ignora artefatos de editor, `.env` e previews em `tools/shots
 
 GitHub Pages **não** usa `.htaccess`. Para o site público, use a HostGator (ou outro Apache) com essa pasta.
 
-## Estrutura
+## 📁 Estrutura
 
 ```
 clickcraft/
@@ -65,16 +65,26 @@ clickcraft/
 └── tools/
 ```
 
-## Tecnologias
+## 🛠️ Tecnologias
 
 - HTML5
 - CSS3
-- JavaScript (Vanilla, ES modules)
+- JavaScript (Vanilla, ES Modules)
 
 ## Licença
 
 MIT — veja [LICENSE](LICENSE).
 
-## Créditos
+- **Claude (Anthropic)** — suporte no aprendizado de HTML, CSS e JavaScript, revisão de lógica e guia de desenvolvimento ao longo de todo o projeto
+- **Google Gemini** — geração de todos os assets visuais do jogo (sprites, ícones, cursores e texturas) via prompts de pixel art
+- **Cursor (AI IDE)** — editor de código com IA integrada, utilizado como ambiente principal de desenvolvimento ao longo de todo o projeto
+
+> O objetivo foi aprender programação web na prática, usando IA como ferramenta de ensino e não como substituta do raciocínio — todo o código foi escrito e entendido pelo desenvolvedor.
+
+## 📌 Status
+
+🚧 Em desenvolvimento.
+
+## 👤 Créditos
 
 Desenvolvido por **Marcos** ([@marcosotaviolr](https://github.com/marcosotaviolr)).
