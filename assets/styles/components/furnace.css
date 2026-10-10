@@ -1,39 +1,179 @@
-.furnace-item__title {
-    font-size: 22px;
-    padding: 12px 25px 8px 25px;
+.furnace-hint {
+    padding: 16px 22px 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-soft);
 }
 
-.furnace-item__cost {
+.furnace-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    align-content: start;
+    gap: 18px;
+    padding: 16px 22px 22px;
+}
+
+.furnace-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px 18px;
+    background-color: var(--surface);
+    border: 3px solid var(--surface-border);
+    border-radius: 14px;
+}
+
+/* Forno aceso: contorno quente enquanto a fila roda. */
+.furnace-card--active {
+    border-color: #ff8c1a;
+    box-shadow: 0 0 0 2px rgba(255, 140, 26, 0.25);
+}
+
+.furnace-card__header {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding-left: 30px;
+    gap: 14px;
+}
+
+.furnace-card__frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    background-color: var(--surface-frame);
+    border-radius: 10px;
+}
+
+.furnace-card--active .furnace-card__frame {
+    background-color: rgba(255, 140, 26, 0.22);
+}
+
+.furnace-card__image {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.furnace-card__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.furnace-card__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.furnace-card__name {
+    font-size: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--text-main);
+}
+
+.furnace-card__formula {
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--text-soft);
+}
+
+.furnace-card__badge {
+    flex-shrink: 0;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #d8d0c6;
+    background-color: var(--surface-strong);
+    border: 2px solid var(--color-blocked-dark);
+    border-radius: 999px;
+}
+
+.furnace-card__badge--ready {
+    color: #a6f0a0;
+    border-color: var(--color-ready);
+    background-color: rgba(63, 158, 58, 0.28);
+}
+
+.furnace-card__badge--busy {
+    color: #ffc47a;
+    border-color: #ff8c1a;
+    background-color: rgba(255, 140, 26, 0.24);
+}
+
+.furnace-card__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
+    gap: 10px;
 }
 
-.furnace-progress {
-    width: 100%;
-    margin-top: 12px;
-    text-align: center;
+.furnace-card__label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-accent);
 }
 
-.furnace-progress__bar {
-    width: 220px;
-    height: 14px;
-    margin: 8px auto 0;
-    background-color: rgba(0, 0, 0, 0.35);
+.furnace-card__stock {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-value);
+}
+
+.furnace-card__controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.furnace-card__controls .btn--action {
+    flex: 1;
+}
+
+.furnace-card__progress {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.furnace-bar {
+    height: 16px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--surface-border);
     border-radius: 8px;
     overflow: hidden;
 }
 
-.furnace-progress__fill {
+.furnace-bar__fill {
     width: 0%;
     height: 100%;
     background-color: #ff8c1a;
     transition: width 0.1s linear;
 }
 
-.furnace-item-row .sell-item__controls button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+.furnace-card__status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-soft);
+}
+
+.furnace-card__timer {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-value);
 }

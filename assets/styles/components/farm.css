@@ -1,6 +1,7 @@
 .island-map {
     display: flex;
     position: relative;
+    z-index: 1;
 }
 
 .island {
@@ -9,6 +10,7 @@
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
+    image-rendering: pixelated;
     width: 450px;
     height: 450px;
     padding: 30px;
@@ -21,6 +23,7 @@
 .island--second {
     position: absolute;
     left: 130%;
+    background-image: url('../../img/ilha2.png');
 }
 
 .island__resources {
@@ -30,37 +33,147 @@
     height: 100%;
 }
 
-.iron-resource {
+.iron-resource,
+.coal-resource,
+.gold-resource,
+.diamond-resource {
     position: absolute;
-    width: 75px;
-    height: 75px;
-    top: 12%;
-    left: 10%;
     cursor: default;
+    z-index: 1;
+    image-rendering: pixelated;
+    filter:
+        drop-shadow(0 7px 3px rgba(0, 0, 0, 0.55))
+        drop-shadow(0 0 8px var(--ore-glow))
+        saturate(1.2)
+        brightness(1.12)
+        contrast(1.08);
+    animation: ore-glint 2.8s ease-in-out infinite;
+}
+
+.iron-resource {
+    --ore-glow: rgba(232, 150, 72, 0.48);
+    width: 86px;
+    height: 86px;
+    top: 11%;
+    left: 9%;
 }
 
 .coal-resource {
-    position: absolute;
-    width: 75px;
-    height: 75px;
-    top: 12%;
-    right: 10%;
-    cursor: default;
+    --ore-glow: rgba(170, 198, 230, 0.42);
+    width: 86px;
+    height: 86px;
+    top: 11%;
+    right: 9%;
+    filter:
+        drop-shadow(0 7px 3px rgba(0, 0, 0, 0.55))
+        drop-shadow(0 0 8px var(--ore-glow))
+        saturate(1.15)
+        brightness(1.22)
+        contrast(1.12);
+    animation-delay: 0.35s;
 }
 
 .gold-resource {
-    position: absolute;
-    width: 75px;
-    height: 75px;
-    bottom: 18%;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: default;
+    --ore-glow: rgba(255, 204, 64, 0.55);
+    width: 86px;
+    height: 86px;
+    bottom: 17%;
+    left: 9%;
+    animation-delay: 0.7s;
+}
+
+.diamond-resource {
+    --ore-glow: rgba(110, 220, 255, 0.58);
+    width: 90px;
+    height: 90px;
+    bottom: 15%;
+    right: 8%;
+    animation-delay: 1.05s;
 }
 
 .island--third {
     position: absolute;
     right: 130%;
+    background-image: url('../../img/ilha3.png');
+}
+
+.automation-pad {
+    position: absolute;
+    width: 240px;
+    height: 130px;
+    top: 38%;
+    left: 50%;
+    margin-left: -120px;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(18, 10, 6, 0.82) 0%,
+        rgba(28, 16, 8, 0.55) 42%,
+        rgba(28, 16, 8, 0) 74%
+    );
+}
+
+.island-steam {
+    position: absolute;
+    top: 12%;
+    left: 56%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(235, 235, 235, 0.55);
+    pointer-events: none;
+    z-index: 2;
+    animation: island-steam 2.4s ease-out infinite;
+}
+
+.island-steam--late {
+    left: 60%;
+    animation-delay: 1.1s;
+}
+
+@keyframes ore-glint {
+    0%,
+    100% {
+        filter:
+            drop-shadow(0 7px 3px rgba(0, 0, 0, 0.55))
+            drop-shadow(0 0 8px var(--ore-glow))
+            saturate(1.2)
+            brightness(1.12)
+            contrast(1.08);
+    }
+
+    50% {
+        filter:
+            drop-shadow(0 7px 3px rgba(0, 0, 0, 0.55))
+            drop-shadow(0 0 14px var(--ore-glow))
+            saturate(1.28)
+            brightness(1.22)
+            contrast(1.12);
+    }
+}
+
+@keyframes island-steam {
+    0% {
+        transform: translate(0, 0) scale(0.5);
+        opacity: 0.55;
+    }
+
+    100% {
+        transform: translate(-10px, -32px) scale(1.9);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .iron-resource,
+    .coal-resource,
+    .gold-resource,
+    .diamond-resource,
+    .island-steam,
+    .island-steam--late {
+        animation: none;
+    }
 }
 
 .island__lock {
@@ -78,6 +191,7 @@
 
 .island__lock-title {
     font-size: 22px;
+    font-weight: 600;
     color: #fff;
 }
 
@@ -85,7 +199,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: 600;
     color: #fff;
 }
 
@@ -127,37 +242,53 @@
     cursor: url('../../img/cmachadoouro.png') 0 0, pointer;
 }
 
+.tree-resource.has-axe-diamond {
+    cursor: url('../../img/machadodiamante40.png') 0 0, pointer;
+}
+
 .stone-resource.has-pickaxe,
 .iron-resource.has-pickaxe,
 .coal-resource.has-pickaxe,
-.gold-resource.has-pickaxe {
+.gold-resource.has-pickaxe,
+.diamond-resource.has-pickaxe {
     cursor: url('../../img/cursorpicaretamadeira37x37.png') 0 0, pointer;
 }
 
 .stone-resource.has-pickaxe-stone,
 .iron-resource.has-pickaxe-stone,
 .coal-resource.has-pickaxe-stone,
-.gold-resource.has-pickaxe-stone {
+.gold-resource.has-pickaxe-stone,
+.diamond-resource.has-pickaxe-stone {
     cursor: url('../../img/cursorpicareta48.png') 0 0, pointer;
 }
 
 .stone-resource.has-pickaxe-iron,
 .iron-resource.has-pickaxe-iron,
 .coal-resource.has-pickaxe-iron,
-.gold-resource.has-pickaxe-iron {
+.gold-resource.has-pickaxe-iron,
+.diamond-resource.has-pickaxe-iron {
     cursor: url('../../img/picaretaferro37.png') 0 0, pointer;
 }
 
 .stone-resource.has-pickaxe-gold,
 .iron-resource.has-pickaxe-gold,
 .coal-resource.has-pickaxe-gold,
-.gold-resource.has-pickaxe-gold {
+.gold-resource.has-pickaxe-gold,
+.diamond-resource.has-pickaxe-gold {
     cursor: url('../../img/cpicaretaouro.png') 0 0, pointer;
+}
+
+.stone-resource.has-pickaxe-diamond,
+.iron-resource.has-pickaxe-diamond,
+.coal-resource.has-pickaxe-diamond,
+.gold-resource.has-pickaxe-diamond,
+.diamond-resource.has-pickaxe-diamond {
+    cursor: url('../../img/picaretadiamante37.png') 0 0, pointer;
 }
 
 .modal {
     position: fixed;
-    width: 1100px;
+    width: min(1100px, 94vw);
     height: min(700px, 90vh);
     max-height: 90vh;
     background-color: rgb(187, 95, 30);
@@ -167,14 +298,74 @@
     left: 50%;
     transform: translate(-50%, -50%);
     display: none;
-    overflow-x: hidden;
-    overflow-y: auto;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal--open {
+    display: flex;
 }
 
 .modal__title {
-    padding: 18px;
-    padding-left: 35px;
-    font-size: 35px;
+    flex-shrink: 0;
+    padding: 16px 18px 12px 35px;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
     border-bottom: 2px solid black;
-    padding-bottom: 10px;
+}
+
+.modal__header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 64px 12px 22px;
+    background-color: rgba(0, 0, 0, 0.18);
+    border-bottom: 2px solid black;
+}
+
+.modal__header .modal__title {
+    padding: 0;
+    border: 0;
+    line-height: 1.15;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.modal__header-icon {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+}
+
+.modal__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.modal__subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--text-accent);
+}
+
+/*
+ * Região rolável do modal: ocupa a altura que sobra depois do título.
+ * `min-height: 0` é o que permite o filho encolher dentro do flex.
+ */
+.modal__scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+
+.modal__scroll::-webkit-scrollbar {
+    display: none;
 }

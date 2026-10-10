@@ -10,14 +10,19 @@
     <link rel="stylesheet" href="assets/styles/components/buttons.css">
     <link rel="stylesheet" href="assets/styles/components/cards.css">
     <link rel="stylesheet" href="assets/styles/components/hud.css">
-    <link rel="stylesheet" href="assets/styles/components/inventory.css">
-    <link rel="stylesheet" href="assets/styles/components/shop.css">
+    <!-- farm.css define o .modal base: precisa vir antes dos modificadores .modal--* -->
     <link rel="stylesheet" href="assets/styles/components/farm.css">
-    <link rel="stylesheet" href="assets/styles/animations.css">
+    <link rel="stylesheet" href="assets/styles/components/inventory.css">
+    <link rel="stylesheet" href="assets/styles/components/settings.css">
+    <link rel="stylesheet" href="assets/styles/components/shop.css">
     <link rel="stylesheet" href="assets/styles/components/sell.css">
     <link rel="stylesheet" href="assets/styles/components/furnace.css">
+    <link rel="stylesheet" href="assets/styles/components/automation.css">
+    <link rel="stylesheet" href="assets/styles/animations.css">
 </head>
 <body>
+    <div class="sea" aria-hidden="true"></div>
+    <div id="modal-backdrop" class="modal-backdrop" aria-hidden="true"></div>
 
     <!-- HUD -->
     <header id="hud" class="hud">
@@ -66,6 +71,12 @@
                     </span>
                     <span id="gold-count">0</span>
                 </div>
+                <div class="resource-counter" id="diamond-counter">
+                    <span class="panel__label">
+                        <img src="assets/img/icondiamante.png" alt="Diamante" class="resource-icon"> Diamante:
+                    </span>
+                    <span id="diamond-count">0</span>
+                </div>
                 <div class="resource-counter" id="iron-ingot-counter">
                     <span class="panel__label">
                         <img src="assets/img/metalrefinado.png" alt="Lingote de Ferro" class="resource-icon"> Lingote Ferro:
@@ -80,13 +91,25 @@
                 </div>
             </div>
         </aside>
+        <div class="hud__xp" id="xp-bar" aria-label="Experiência">
+            <div class="hud__xp-level-wrap">
+                <span class="hud__xp-level-label">Nível</span>
+                <span class="hud__xp-level" id="player-level">1</span>
+            </div>
+            <div class="hud__xp-track">
+                <div class="hud__xp-fill" id="xp-bar-fill"></div>
+                <span class="hud__xp-values" id="xp-bar-label">0 / 40</span>
+            </div>
+        </div>
     </header>
 
     <!-- FARM / ISLAND MAP -->
     <main id="island-map" class="island-map">
         <section class="island island--initial" id="initial-island">
             <img src="assets/img/tree.png" alt="Árvore" class="tree-resource">
+            <img src="assets/img/roboautomato.png" alt="" class="automator automator--wood" hidden>
             <img src="assets/img/stone.png" alt="Pedra" class="stone-resource">
+            <img src="assets/img/roboautomato.png" alt="" class="automator automator--stone" hidden>
             <img src="assets/img/shop.png" alt="Loja" id="shop-trigger" class="farm-trigger farm-trigger--shop">
             <img src="assets/img/craft.png" alt="Crafter" id="crafter-trigger" class="farm-trigger farm-trigger--crafter">
             <img src="assets/img/sell.png" alt="Vender" id="sell-trigger" class="farm-trigger farm-trigger--sell">
@@ -95,28 +118,39 @@
         <section class="island island--second" id="island-second">
             <div class="island__resources" id="island-second-resources">
                 <img src="assets/img/ferro.png" alt="Minério de Ferro" class="iron-resource">
+                <img src="assets/img/roboautomato.png" alt="" class="automator automator--iron" hidden>
                 <img src="assets/img/carvao.png" alt="Minério de Carvão" class="coal-resource">
+                <img src="assets/img/roboautomato.png" alt="" class="automator automator--coal" hidden>
                 <img src="assets/img/ouro.png" alt="Minério de Ouro" class="gold-resource">
+                <img src="assets/img/roboautomato.png" alt="" class="automator automator--gold" hidden>
+                <img src="assets/img/diamante.png" alt="Minério de Diamante" class="diamond-resource">
+                <img src="assets/img/roboautomato.png" alt="" class="automator automator--diamond" hidden>
             </div>
             <div class="island__lock" id="island-second-lock">
                 <p class="island__lock-title">Trancada</p>
                 <p class="island__lock-price">
-                    2500
+                    <span id="island-second-price">0</span>
                     <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
                 </p>
-                <button class="btn btn--primary island__unlock-button" id="unlock-island-second">
+                <button type="button" class="btn btn--action island__unlock-button" id="unlock-island-second">
                     Liberar
                 </button>
             </div>
         </section>
         <section class="island island--third" id="island-third">
+            <div class="island__resources" id="island-third-resources">
+                <span class="automation-pad" aria-hidden="true"></span>
+                <span class="island-steam" aria-hidden="true"></span>
+                <span class="island-steam island-steam--late" aria-hidden="true"></span>
+                <img src="assets/img/lojaautomacao.png" alt="Loja de Automações" id="automation-trigger" class="farm-trigger farm-trigger--automation">
+            </div>
             <div class="island__lock" id="island-third-lock">
                 <p class="island__lock-title">Trancada</p>
                 <p class="island__lock-price">
-                    30000
+                    <span id="island-third-price">0</span>
                     <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
                 </p>
-                <button class="btn btn--primary island__unlock-button" id="unlock-island-third">
+                <button type="button" class="btn btn--action island__unlock-button" id="unlock-island-third">
                     Liberar
                 </button>
             </div>
@@ -126,507 +160,235 @@
     <!-- SHOP MODAL -->
     <section class="modal modal--shop" id="shop-modal">
         <button class="btn btn--danger modal__close">X</button>
-        <h1 class="modal__title">Shop</h1>
-        <div class="shop-item-list">
-            <article id="shop-item-axe-wood" class="shop-item-row">
-                <div class="shop-item__info">
-                    <img src="assets/img/blueprint-axe.png" alt="Blueprint do Machado" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Machado de Madeira</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">Quando utilizado, a madeira coletada passa a ser 2</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">200<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-axe-wood">Comprar</button>
-                </div>
-            </article>
-            <article id="shop-item-pickaxe-wood" class="shop-item-row">
-                <div class="shop-item__info">
-                    <img src="assets/img/blueprint-picaxe.png" alt="Blueprint da Picareta" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Picareta de Madeira</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">Libera a mineração de pedra</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">280<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-pickaxe-wood">Comprar</button>
-                </div>
-            </article>
-            <article id="shop-item-furnace" class="shop-item-row shop-item-row--locked">
-                <div class="shop-item__info">
-                    <img src="assets/img/bluefornalha.png" alt="Blueprint da Fornalha" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Fornalha</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">Permite fundir minérios na ilha inicial</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">450<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-furnace">Comprar</button>
-                </div>
-            </article>
-            <article id="shop-item-axe-stone" class="shop-item-row shop-item-row--locked">
-                <div class="shop-item__info">
-                    <img src="assets/img/blueprint-axe.png" alt="Blueprint do Machado de Pedra" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Machado de Pedra</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">Quando utilizado, a madeira coletada passa a ser 3</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">500<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-axe-stone">Comprar</button>
-                </div>
-            </article>
-            <article id="shop-item-pickaxe-stone" class="shop-item-row shop-item-row--locked">
-                <div class="shop-item__info">
-                    <img src="assets/img/blueprint-picaxe.png" alt="Blueprint da Picareta de Pedra" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Picareta de Pedra</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">Coleta 2 pedras e libera mineração de ferro e carvão</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">600<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-pickaxe-stone">Comprar</button>
-                </div>
-            </article>
-            <article id="shop-item-axe-iron" class="shop-item-row shop-item-row--locked">
-                <div class="shop-item__info">
-                    <img src="assets/img/blueprint-axe.png" alt="Blueprint do Machado de Ferro" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Machado de Ferro</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">Quando utilizado, a madeira coletada passa a ser 4</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">900<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-axe-iron">Comprar</button>
-                </div>
-            </article>
-            <article id="shop-item-pickaxe-iron" class="shop-item-row shop-item-row--locked">
-                <div class="shop-item__info">
-                    <img src="assets/img/blueprint-picaxe.png" alt="Blueprint da Picareta de Ferro" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Picareta de Ferro</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">3 pedras, 2 carvões e libera mineração de ouro</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">1100<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-pickaxe-iron">Comprar</button>
-                </div>
-            </article>
-            <article id="shop-item-axe-gold" class="shop-item-row shop-item-row--locked">
-                <div class="shop-item__info">
-                    <img src="assets/img/blueprint-axe.png" alt="Blueprint do Machado de Ouro" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Machado de Ouro</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">Quando utilizado, a madeira coletada passa a ser 5</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">1800<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-axe-gold">Comprar</button>
-                </div>
-            </article>
-            <article id="shop-item-pickaxe-gold" class="shop-item-row shop-item-row--locked">
-                <div class="shop-item__info">
-                    <img src="assets/img/blueprint-picaxe.png" alt="Blueprint da Picareta de Ouro" class="shop-item__image">
-                    <div class="flex-column">
-                        <h2 class="shop-item__title">Picareta de Ouro</h2>
-                        <h3 class="shop-item__subtitle">(BluePrint)</h3>
-                        <p class="shop-item__description">4 pedras, 2 ferros e 2 carvões por clique</p>
-                    </div>
-                </div>
-                <div>
-                    <p class="shop-item__price">2200<img src="assets/img/coin.png" alt="Moeda" class="price-icon"></p>
-                    <button class="btn btn--primary" id="buy-pickaxe-gold">Comprar</button>
-                </div>
-            </article>
+        <header class="modal__header">
+            <img src="assets/img/shop.png" alt="" class="modal__header-icon">
+            <div class="modal__header-text">
+                <h1 class="modal__title">Shop</h1>
+                <p class="modal__subtitle">Blueprints para ferramentas e construções</p>
+            </div>
+        </header>
+        <div class="modal__scroll">
+            <div class="market-list" id="shop-item-list"></div>
+            <div class="market-empty" id="shop-empty-message" hidden>
+                <img src="assets/img/shop.png" alt="" class="market-empty__icon">
+                <h2 class="market-empty__title">Loja vazia</h2>
+                <p class="market-empty__text">
+                    Nenhuma blueprint à venda agora. Fabrique no Crafter as
+                    ferramentas que já comprou para o próximo nível aparecer aqui.
+                </p>
+            </div>
         </div>
     </section>
 
     <!-- SETTINGS MODAL -->
-    <section class="modal" id="settings-modal">
+    <section class="modal modal--settings" id="settings-modal">
         <button class="btn btn--danger modal__close">X</button>
         <h1 class="modal__title">Configurações</h1>
-        <h2 class="section-heading">Instruções</h2>
-        <ul class="instruction-list">
-            <li>Clique nos materiais pelo mapa para coletar</li>
-            <li>Clique no "Loja de Venda" para vender os materiais coletados</li>
-            <li>Clique no "Shop" para comprar blueprints e outras coisas</li>
-            <li>Clique no "Crafter" (do lado do shop) para fazer as ferramentas com os blueprints comprados</li>
-        </ul>
+
+        <div class="settings modal__scroll">
+            <article class="settings-card settings-card--wide">
+                <h2 class="settings-card__title">Preferências</h2>
+                <div class="settings-option">
+                    <div class="settings-option__text">
+                        <span class="settings-option__name">Mostrar "+N" ao coletar</span>
+                        <span class="settings-option__hint">Desligue para uma tela mais limpa</span>
+                    </div>
+                    <button class="toggle toggle--on" id="settings-popup-toggle" type="button" aria-pressed="true">Ativado</button>
+                </div>
+                <div class="settings-option">
+                    <div class="settings-option__text">
+                        <span class="settings-option__name">Recomeçar do zero</span>
+                        <span class="settings-option__hint">Apaga materiais, ferramentas e ilhas</span>
+                    </div>
+                    <button class="toggle toggle--danger" id="settings-reset-button" type="button">Reiniciar progresso</button>
+                </div>
+            </article>
+
+            <article class="settings-card">
+                <h2 class="settings-card__title">Como jogar</h2>
+                <ul class="settings-list">
+                    <li>Cada material coletado dá <strong>1 de XP</strong> e enche a barra de nível</li>
+                    <li>Venda o que coletou na <strong>Loja de Venda</strong></li>
+                    <li>Compre blueprints no <strong>Shop</strong> com as moedas</li>
+                    <li>Transforme as blueprints em ferramentas no <strong>Crafter</strong></li>
+                    <li>Troque a ferramenta ativa pela <strong>Mochila</strong></li>
+                    <li>Na Ilha 3, compre autômatos que coletam sozinhos</li>
+                </ul>
+            </article>
+
+            <article class="settings-card">
+                <h2 class="settings-card__title">Ordem de progressão</h2>
+                <ol class="settings-steps">
+                    <li>Machado e picareta de <strong>madeira</strong></li>
+                    <li>Machado e picareta de <strong>pedra</strong></li>
+                    <li>Ilha 2 por <strong id="settings-island-second-price">0</strong> moedas</li>
+                    <li>Fornalha para fundir lingotes</li>
+                    <li>Ferramentas de <strong>ferro</strong>, depois de <strong>ouro</strong></li>
+                    <li>Minerar <strong>diamante</strong> na Ilha 2 e craftar as ferramentas</li>
+                    <li>Ilha 3 por <strong id="settings-island-third-price">0</strong> moedas</li>
+                    <li>Autômatos na <strong>Loja de Automações</strong></li>
+                </ol>
+            </article>
+
+            <article class="settings-card">
+                <h2 class="settings-card__title">Preços de venda</h2>
+                <div class="price-table" id="settings-price-table"></div>
+            </article>
+
+            <article class="settings-card">
+                <h2 class="settings-card__title">Bom saber</h2>
+                <ul class="settings-list">
+                    <li>Blueprints só aparecem no Shop quando o machado <em>e</em> a picareta do nível anterior estão prontos</li>
+                    <li>Ferro e carvão exigem picareta de pedra; o ouro exige picareta de ferro; o diamante fica na Ilha 2 e exige picareta de ouro</li>
+                    <li>Ferramentas de diamante usam diamante cru e madeira — não passam pela fornalha</li>
+                    <li>A fornalha leva 8 segundos por lingote e trabalha em fila</li>
+                    <li>Autômatos começam coletando 1 por segundo; cada melhoria aumenta essa quantidade</li>
+                    <li>O progresso não é salvo: ao recarregar a página o jogo recomeça</li>
+                </ul>
+            </article>
+        </div>
     </section>
 
     <!-- INVENTORY MODAL -->
-    <section class="modal" id="inventory-modal">
+    <section class="modal modal--inventory" id="inventory-modal">
         <button class="btn btn--danger modal__close">X</button>
         <h1 class="modal__title">Mochila</h1>
-        <h2 class="section-heading">Ferramentas</h2>
-        <p class="text-indent--sm">Nível do Machado: <span id="axe-level"></span></p>
-        <p class="text-indent--sm">Nível da Picareta: <span id="pickaxe-level"></span></p>
+
+        <div class="backpack modal__scroll">
+            <div class="backpack__equipped">
+                <article class="equipped-card" id="equipped-axe-slot">
+                    <h2 class="equipped-card__label">Machado equipado</h2>
+                    <div class="equipped-card__frame">
+                        <img class="equipped-card__image" alt="">
+                    </div>
+                    <p class="equipped-card__name"></p>
+                    <p class="equipped-card__effect"></p>
+                </article>
+                <article class="equipped-card" id="equipped-pickaxe-slot">
+                    <h2 class="equipped-card__label">Picareta equipada</h2>
+                    <div class="equipped-card__frame">
+                        <img class="equipped-card__image" alt="">
+                    </div>
+                    <p class="equipped-card__name"></p>
+                    <p class="equipped-card__effect"></p>
+                </article>
+            </div>
+
+            <section class="backpack__section">
+                <h2 class="backpack__heading">Machados</h2>
+                <div class="tool-rail">
+                    <button type="button" class="tool-rail__arrow tool-rail__arrow--prev" aria-label="Machados anteriores">‹</button>
+                    <div class="tool-rail__viewport">
+                        <div class="tool-grid" id="axe-grid"></div>
+                    </div>
+                    <button type="button" class="tool-rail__arrow tool-rail__arrow--next" aria-label="Próximos machados">›</button>
+                </div>
+            </section>
+
+            <section class="backpack__section">
+                <h2 class="backpack__heading">Picaretas</h2>
+                <div class="tool-rail">
+                    <button type="button" class="tool-rail__arrow tool-rail__arrow--prev" aria-label="Picaretas anteriores">‹</button>
+                    <div class="tool-rail__viewport">
+                        <div class="tool-grid" id="pickaxe-grid"></div>
+                    </div>
+                    <button type="button" class="tool-rail__arrow tool-rail__arrow--next" aria-label="Próximas picaretas">›</button>
+                </div>
+            </section>
+
+            <p class="backpack__hint">Clique em um quadrado desbloqueado para equipar aquela ferramenta.</p>
+        </div>
     </section>
 
     <!-- CRAFTER MODAL -->
-    <section class="modal" id="crafter-modal">
+    <section class="modal modal--crafter" id="crafter-modal">
         <button class="btn btn--danger modal__close">X</button>
-        <h1 class="modal__title">Crafter</h1>
+        <header class="modal__header">
+            <img src="assets/img/craft.png" alt="" class="modal__header-icon">
+            <div class="modal__header-text">
+                <h1 class="modal__title">Crafter</h1>
+                <p class="modal__subtitle">Transforme blueprints em ferramentas</p>
+            </div>
+        </header>
 
-        <article id="craft-item-axe-wood" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/machadomadeira.png" alt="Machado" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Machado de Madeira</h2>
-                    <p class="shop-item__description">Quando utilizado, a madeira coletada passa a ser 2</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">80<img src="assets/img/iconwood.png" alt="Madeira" class="price-icon"></p>
-                <button class="btn btn--primary" id="craft-axe-wood">Fabricar</button>
-            </div>
-        </article>
-
-        <article id="craft-item-pickaxe-wood" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/picaretamadeira.png" alt="Picareta" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Picareta de Madeira</h2>
-                    <p class="shop-item__description">Libera a mineração de pedra</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">150<img src="assets/img/iconwood.png" alt="Madeira" class="price-icon"></p>
-                <button class="btn btn--primary" id="craft-pickaxe-wood">Fabricar</button>
-            </div>
-        </article>
-
-        <article id="craft-item-furnace" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/fornalha.png" alt="Fornalha" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Fornalha</h2>
-                    <p class="shop-item__description">Coloca uma fornalha na ilha inicial</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">300<img src="assets/img/iconstone.png" alt="Pedra" class="price-icon"></p>
-                <button class="btn btn--primary" id="craft-furnace">Fabricar</button>
-            </div>
-        </article>
-
-        <article id="craft-item-axe-stone" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/axe.png" alt="Machado de Pedra" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Machado de Pedra</h2>
-                    <p class="shop-item__description">Quando utilizado, a madeira coletada passa a ser 3</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">
-                    220<img src="assets/img/iconwood.png" alt="Madeira" class="price-icon">
-                    160<img src="assets/img/iconstone.png" alt="Pedra" class="price-icon">
+        <div class="modal__scroll">
+            <div class="market-list" id="craft-item-list"></div>
+            <div class="market-empty" id="craft-empty-message" hidden>
+                <img src="assets/img/craft.png" alt="" class="market-empty__icon">
+                <h2 class="market-empty__title">Bancada vazia</h2>
+                <p class="market-empty__text">
+                    Ainda não há o que fabricar. Compre uma blueprint no Shop
+                    para a receita aparecer aqui.
                 </p>
-                <button class="btn btn--primary" id="craft-axe-stone">Fabricar</button>
             </div>
-        </article>
-
-        <article id="craft-item-pickaxe-stone" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/picaxe.png" alt="Picareta de Pedra" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Picareta de Pedra</h2>
-                    <p class="shop-item__description">Coleta 2 pedras e libera mineração de ferro e carvão</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">
-                    280<img src="assets/img/iconwood.png" alt="Madeira" class="price-icon">
-                    180<img src="assets/img/iconstone.png" alt="Pedra" class="price-icon">
-                </p>
-                <button class="btn btn--primary" id="craft-pickaxe-stone">Fabricar</button>
-            </div>
-        </article>
-
-        <article id="craft-item-axe-iron" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/machadoferro.png" alt="Machado de Ferro" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Machado de Ferro</h2>
-                    <p class="shop-item__description">Quando utilizado, a madeira coletada passa a ser 4</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">
-                    300<img src="assets/img/iconwood.png" alt="Madeira" class="price-icon">
-                    75<img src="assets/img/metalrefinado.png" alt="Lingote" class="price-icon">
-                </p>
-                <button class="btn btn--primary" id="craft-axe-iron">Fabricar</button>
-            </div>
-        </article>
-
-        <article id="craft-item-pickaxe-iron" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/picaretaferro.png" alt="Picareta de Ferro" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Picareta de Ferro</h2>
-                    <p class="shop-item__description">3 pedras, 2 carvões e libera mineração de ouro</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">
-                    350<img src="assets/img/iconwood.png" alt="Madeira" class="price-icon">
-                    100<img src="assets/img/metalrefinado.png" alt="Lingote" class="price-icon">
-                </p>
-                <button class="btn btn--primary" id="craft-pickaxe-iron">Fabricar</button>
-            </div>
-        </article>
-
-        <article id="craft-item-axe-gold" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/machadoouro.png" alt="Machado de Ouro" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Machado de Ouro</h2>
-                    <p class="shop-item__description">Quando utilizado, a madeira coletada passa a ser 5</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">
-                    400<img src="assets/img/iconwood.png" alt="Madeira" class="price-icon">
-                    60<img src="assets/img/lingoteouro.png" alt="Lingote de Ouro" class="price-icon">
-                </p>
-                <button class="btn btn--primary" id="craft-axe-gold">Fabricar</button>
-            </div>
-        </article>
-
-        <article id="craft-item-pickaxe-gold" class="craft-item-row">
-            <div class="shop-item__info">
-                <img src="assets/img/picaretaouro.png" alt="Picareta de Ouro" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title">Picareta de Ouro</h2>
-                    <p class="shop-item__description">4 pedras, 2 ferros e 2 carvões por clique</p>
-                </div>
-            </div>
-            <div>
-                <p class="craft-item__price">
-                    450<img src="assets/img/iconwood.png" alt="Madeira" class="price-icon">
-                    80<img src="assets/img/lingoteouro.png" alt="Lingote de Ouro" class="price-icon">
-                </p>
-                <button class="btn btn--primary" id="craft-pickaxe-gold">Fabricar</button>
-            </div>
-        </article>
+        </div>
     </section>
 
     <!-- SELL MODAL -->
     <section class="modal modal--sell" id="sell-modal">
         <button class="btn btn--danger modal__close">X</button>
-        <h1 class="modal__title">Loja de Venda</h1>
-        <div class="sell-summary shop-item-row">
-            <h2 class="section-heading">
-                Valor total:
-                <span id="sell-total-value">0</span>
-                <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
-            </h2>
-            <button class="btn btn--secondary" id="sell-all-button">Vender Tudo</button>
+        <header class="modal__header">
+            <img src="assets/img/sell.png" alt="" class="modal__header-icon">
+            <div class="modal__header-text">
+                <h1 class="modal__title">Loja de Venda</h1>
+                <p class="modal__subtitle">Troque materiais por moedas</p>
+            </div>
+        </header>
+        <div class="sell-summary">
+            <div class="sell-summary__text">
+                <p class="sell-summary__label">Valor de todo o estoque</p>
+                <p class="sell-summary__value">
+                    <span id="sell-total-value">0</span>
+                    <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
+                </p>
+            </div>
+            <button type="button" class="btn btn--action" id="sell-all-button">Vender Tudo</button>
         </div>
 
-        <div class="sell-items">
-            <article class="sell-item-row" data-material="wood">
-                <div class="sell-item__info">
-                    <img src="assets/img/iconwood.png" alt="Madeira" class="shop-item__image">
-                    <div class="flex-column">
-                        <p>Valor: 1 moeda</p>
-                        <p>Quantidade: <span id="sell-wood-quantity">0</span></p>
-                    </div>
-                </div>
-                <div class="sell-item__actions">
-                    <p class="sell-item__total-p">
-                        Valor total:
-                        <span id="sell-wood-total">0</span>
-                        <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
-                    </p>
-                    <div class="sell-item__controls">
-                        <input type="number" class="sell-item__input" id="sell-wood-input" value="1" min="1">
-                        <button class="btn btn--secondary" id="sell-wood-button">Vender</button>
-                        <button class="btn btn--secondary" id="sell-wood-all-button">Tudo</button>
-                    </div>
-                </div>
-            </article>
-
-            <article class="sell-item-row" data-material="stone">
-                <div class="sell-item__info">
-                    <img src="assets/img/iconstone.png" alt="Pedra" class="shop-item__image">
-                    <div class="flex-column">
-                        <p>Valor: 1 moeda</p>
-                        <p>Quantidade: <span id="sell-stone-quantity">0</span></p>
-                    </div>
-                </div>
-                <div class="sell-item__actions">
-                    <p class="sell-item__total-p">
-                        Valor total:
-                        <span id="sell-stone-total">0</span>
-                        <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
-                    </p>
-                    <div class="sell-item__controls">
-                        <input type="number" class="sell-item__input" id="sell-stone-input" value="1" min="1">
-                        <button class="btn btn--secondary" id="sell-stone-button">Vender</button>
-                        <button class="btn btn--secondary" id="sell-stone-all-button">Tudo</button>
-                    </div>
-                </div>
-            </article>
-
-            <article class="sell-item-row" data-material="iron" id="sell-item-iron">
-                <div class="sell-item__info">
-                    <img src="assets/img/ferro.png" alt="Ferro" class="shop-item__image">
-                    <div class="flex-column">
-                        <p>Valor: 2 moedas</p>
-                        <p>Quantidade: <span id="sell-iron-quantity">0</span></p>
-                    </div>
-                </div>
-                <div class="sell-item__actions">
-                    <p class="sell-item__total-p">
-                        Valor total:
-                        <span id="sell-iron-total">0</span>
-                        <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
-                    </p>
-                    <div class="sell-item__controls">
-                        <input type="number" class="sell-item__input" id="sell-iron-input" value="1" min="1">
-                        <button class="btn btn--secondary" id="sell-iron-button">Vender</button>
-                        <button class="btn btn--secondary" id="sell-iron-all-button">Tudo</button>
-                    </div>
-                </div>
-            </article>
-
-            <article class="sell-item-row" data-material="coal" id="sell-item-coal">
-                <div class="sell-item__info">
-                    <img src="assets/img/carvao.png" alt="Carvão" class="shop-item__image">
-                    <div class="flex-column">
-                        <p>Valor: 1 moeda</p>
-                        <p>Quantidade: <span id="sell-coal-quantity">0</span></p>
-                    </div>
-                </div>
-                <div class="sell-item__actions">
-                    <p class="sell-item__total-p">
-                        Valor total:
-                        <span id="sell-coal-total">0</span>
-                        <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
-                    </p>
-                    <div class="sell-item__controls">
-                        <input type="number" class="sell-item__input" id="sell-coal-input" value="1" min="1">
-                        <button class="btn btn--secondary" id="sell-coal-button">Vender</button>
-                        <button class="btn btn--secondary" id="sell-coal-all-button">Tudo</button>
-                    </div>
-                </div>
-            </article>
-
-            <article class="sell-item-row" data-material="gold" id="sell-item-gold">
-                <div class="sell-item__info">
-                    <img src="assets/img/iconouro.png" alt="Ouro" class="shop-item__image">
-                    <div class="flex-column">
-                        <p>Valor: 4 moedas</p>
-                        <p>Quantidade: <span id="sell-gold-quantity">0</span></p>
-                    </div>
-                </div>
-                <div class="sell-item__actions">
-                    <p class="sell-item__total-p">
-                        Valor total:
-                        <span id="sell-gold-total">0</span>
-                        <img src="assets/img/coin.png" alt="Moeda" class="price-icon">
-                    </p>
-                    <div class="sell-item__controls">
-                        <input type="number" class="sell-item__input" id="sell-gold-input" value="1" min="1">
-                        <button class="btn btn--secondary" id="sell-gold-button">Vender</button>
-                        <button class="btn btn--secondary" id="sell-gold-all-button">Tudo</button>
-                    </div>
-                </div>
-            </article>
-        </div>
+        <div class="sell-list modal__scroll" id="sell-item-list"></div>
     </section>
 
     <!-- FURNACE MODAL -->
     <section class="modal modal--furnace" id="furnace-modal">
         <button class="btn btn--danger modal__close">X</button>
-        <h1 class="modal__title">Fornalha</h1>
+        <header class="modal__header">
+            <img src="assets/img/fornalha.png" alt="" class="modal__header-icon">
+            <div class="modal__header-text">
+                <h1 class="modal__title">Fornalha</h1>
+                <p class="modal__subtitle">Funda minérios em lingotes</p>
+            </div>
+        </header>
 
-        <article class="sell-item-row furnace-item-row" data-recipe="iron">
-            <div class="sell-item__info">
-                <img src="assets/img/metalrefinado.png" alt="Lingote de Ferro" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title furnace-item__title">Lingote de Ferro</h2>
-                    <p class="furnace-item__cost">
-                        Custo:
-                        <span id="furnace-iron-ore-cost">1</span>
-                        <img src="assets/img/iconferro.png" alt="Ferro" class="price-icon">
-                        <span id="furnace-iron-coal-cost">1</span>
-                        <img src="assets/img/iconcarvao.png" alt="Carvão" class="price-icon">
-                    </p>
-                    <p>Tempo: 15s por lingote</p>
-                </div>
-            </div>
-            <div class="sell-item__actions">
-                <p class="sell-item__total-p">
-                    Pode fabricar:
-                    <span id="furnace-iron-max">0</span>
-                </p>
-                <div class="sell-item__controls">
-                    <input type="number" class="sell-item__input" id="furnace-iron-input" value="1" min="1">
-                    <button class="btn btn--secondary" id="furnace-iron-craft">Fabricar</button>
-                    <button class="btn btn--secondary" id="furnace-iron-craft-all">Tudo</button>
-                </div>
-                <div class="furnace-progress">
-                    <p id="furnace-iron-status">Parada</p>
-                    <div class="furnace-progress__bar">
-                        <div class="furnace-progress__fill" id="furnace-iron-progress"></div>
-                    </div>
-                </div>
-            </div>
-        </article>
+        <div class="modal__scroll">
+            <p class="furnace-hint">
+                Cada forno funde um lingote por vez. Escolha o tamanho do lote: os materiais
+                saem do estoque na hora, e os lingotes chegam conforme a fila avança.
+            </p>
+            <div class="furnace-list" id="furnace-list"></div>
+        </div>
+    </section>
 
-        <article class="sell-item-row furnace-item-row" data-recipe="gold">
-            <div class="sell-item__info">
-                <img src="assets/img/lingoteouro.png" alt="Lingote de Ouro" class="shop-item__image">
-                <div class="flex-column">
-                    <h2 class="shop-item__title furnace-item__title">Lingote de Ouro</h2>
-                    <p class="furnace-item__cost">
-                        Custo:
-                        <span id="furnace-gold-ore-cost">2</span>
-                        <img src="assets/img/iconouro.png" alt="Ouro" class="price-icon">
-                        <span id="furnace-gold-coal-cost">4</span>
-                        <img src="assets/img/iconcarvao.png" alt="Carvão" class="price-icon">
-                    </p>
-                    <p>Tempo: 15s por lingote</p>
-                </div>
+    <!-- AUTOMATION MODAL -->
+    <section class="modal modal--automation" id="automation-modal">
+        <button class="btn btn--danger modal__close">X</button>
+        <header class="modal__header">
+            <img src="assets/img/lojaautomacao.png" alt="" class="modal__header-icon">
+            <div class="modal__header-text">
+                <h1 class="modal__title">Automações</h1>
+                <p class="modal__subtitle">Autômatos que coletam recursos sozinhos</p>
             </div>
-            <div class="sell-item__actions">
-                <p class="sell-item__total-p">
-                    Pode fabricar:
-                    <span id="furnace-gold-max">0</span>
+        </header>
+        <div class="modal__scroll">
+            <div class="market-list" id="automation-item-list"></div>
+            <div class="market-empty" id="automation-empty-message" hidden>
+                <img src="assets/img/lojaautomacao.png" alt="" class="market-empty__icon">
+                <h2 class="market-empty__title">Nenhum autômato disponível</h2>
+                <p class="market-empty__text">
+                    Fabrique ferramentas no Crafter para os autômatos
+                    correspondentes aparecerem aqui.
                 </p>
-                <div class="sell-item__controls">
-                    <input type="number" class="sell-item__input" id="furnace-gold-input" value="1" min="1">
-                    <button class="btn btn--secondary" id="furnace-gold-craft">Fabricar</button>
-                    <button class="btn btn--secondary" id="furnace-gold-craft-all">Tudo</button>
-                </div>
-                <div class="furnace-progress">
-                    <p id="furnace-gold-status">Parada</p>
-                    <div class="furnace-progress__bar">
-                        <div class="furnace-progress__fill" id="furnace-gold-progress"></div>
-                    </div>
-                </div>
             </div>
-        </article>
+        </div>
     </section>
 
     <script type="module" src="src/core/main.js"></script>

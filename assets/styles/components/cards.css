@@ -1,56 +1,145 @@
-.shop-item__image {
-    width: 100px;
-    height: 100px;
-    padding: 20px;
+/* Cartões usados pela Loja e pelo Crafter. */
+
+.market-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    align-content: start;
+    gap: 16px;
+    padding: 18px 22px 22px;
 }
 
-.shop-item__title {
-    padding: 20px 25px 8px 25px;
-    font-size: 30px;
-}
-
-.shop-item__subtitle {
-    padding: 0px 0px 4px 30px;
-    font-size: 18px;
-}
-
-.shop-item__info {
+.market-card {
     display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    background-color: var(--surface);
+    border: 3px solid var(--surface-border);
+    border-radius: 14px;
 }
 
-.shop-item__description {
-    padding-left: 30px;
-    padding-top: 10px;
-}
-
-.shop-item__price {
-    width: 100px;
-    margin: 20px 5px 0px 15px;
-}
-
-.craft-item__price {
-    width: auto;
-    min-width: 100px;
-    margin: 20px 0px 0px 0px;
-    text-align: center;
+.market-card__frame {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    height: 96px;
+    background-color: var(--surface-frame);
+    border-radius: 10px;
 }
 
-.shop-item-row {
+.market-card__image {
+    width: 74px;
+    height: 74px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.market-card__body {
     display: flex;
-    justify-content: space-between;
-    border-bottom: 2px solid black;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
 }
 
-.shop-item-row--locked {
-    display: none;
+.market-card__title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text-main);
 }
 
-.craft-item-row {
+.market-card__tag {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-accent);
+}
+
+.market-card__description {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text-soft);
+}
+
+.market-card__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.market-empty {
     display: none;
-    justify-content: space-between;
-    border-bottom: 2px solid black;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 28px 22px;
+    padding: 36px 28px;
+    text-align: center;
+    background-color: var(--surface);
+    border: 3px dashed var(--surface-border);
+    border-radius: 14px;
+}
+
+.market-empty__icon {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: grayscale(0.15);
+}
+
+.market-empty__title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.market-empty__text {
+    max-width: 420px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-soft);
+}
+
+.modal--crafter .modal__scroll,
+.modal--shop .modal__scroll,
+.modal--automation .modal__scroll {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---- Etiquetas de custo ---- */
+
+.cost-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cost-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    background-color: var(--surface-strong);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+}
+
+.cost-chip__icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Recurso que o jogador ainda não tem em quantidade suficiente. */
+.cost-chip--missing {
+    color: var(--color-missing);
+    border-color: var(--color-missing);
+    background-color: rgba(150, 30, 20, 0.35);
 }

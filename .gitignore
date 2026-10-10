@@ -46,3 +46,10 @@ build/
 # Local overrides
 *.local
 local.config.*
+
+# Artefatos gerados pelos scripts de tools/
+tools/preview-*.html
+tools/tmp-*.html
+tools/tmpPreview.mjs
+tools/shots/
+.screenshots/

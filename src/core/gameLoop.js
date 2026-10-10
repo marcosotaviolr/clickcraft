@@ -1,7 +1,16 @@
+import { AUTOMATION_TICK_MS } from '../utils/constants.js';
+import { tickAutomations } from '../systems/automation.js';
+
+/** Identificador do intervalo de automações. */
+let automationTimerId = null;
+
 /**
- * Inicia o loop principal do jogo.
- * O ClickCraft é baseado em cliques e não possui tick contínuo.
+ * Inicia o ciclo contínuo das coletas automáticas.
  */
 export function startGameLoop() {
-    // Sem loop ativo — mecânicas são acionadas por eventos de clique.
+    if (automationTimerId !== null) {
+        return;
+    }
+
+    automationTimerId = setInterval(tickAutomations, AUTOMATION_TICK_MS);
 }
