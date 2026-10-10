@@ -29,24 +29,6 @@ python -m http.server 5500
 
 Acesse `http://localhost:5500`. No Cursor/VS Code, a extensão Live Server também funciona.
 
-## 📤 Publicar no GitHub
-
-1. Confirme que `TEST_ECONOMY` em `src/utils/constants.js` está `false` (preços reais do jogo).
-2. Não envie `.env`, chaves nem a pasta `.git` para a hospedagem.
-3. Crie o repositório no GitHub e faça o push da branch principal.
-
-O `.gitignore` já ignora artefatos de editor, `.env` e previews em `tools/shots/`.
-
-## 🚀 Deploy (HostGator / FTP)
-
-1. Envie os arquivos em modo **Binary** no FTP (importante para `.png`).
-2. Mantenha a estrutura (`index.html`, `assets/`, `src/`, `.htaccess`).
-3. Nomes de imagens em **minúsculas** (o Linux diferencia maiúsculas).
-4. Depois de atualizar, use hard refresh ou aba anônima (cache de CSS/imagens).
-5. O `.htaccess` força HTTPS — o SSL do domínio precisa estar ativo.
-
-> GitHub Pages **não** usa `.htaccess`. Para o site público, use a HostGator (ou outro Apache) com essa pasta.
-
 ## 📁 Estrutura
 
 ```
