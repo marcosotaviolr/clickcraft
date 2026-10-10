@@ -1,12 +1,12 @@
-# ClickCraft
+# 🏝️ ClickCraft
 
 Jogo de farm/clicker baseado em ilhas, feito com HTML, CSS e JavaScript puro (sem build e sem framework).
 
-## Sobre
+## 🎮 Sobre
 
-Você começa na ilha inicial coletando recursos, vende materiais, compra blueprints, fabrica ferramentas e libera novas ilhas. Há fornalha para fundir lingotes e progressão de madeira → pedra → ferro → ouro.
+Você começa na ilha inicial coletando recursos, vende materiais, compra blueprints, fabrica ferramentas e libera novas ilhas. Há fornalha para fundir lingotes e progressão de madeira → pedra → ferro → ouro → diamante.
 
-## Como jogar
+## 🕹️ Como jogar
 
 - Clique nos recursos do mapa para coletar
 - Use a **Loja de Venda** para vender materiais e ganhar moedas
@@ -15,10 +15,11 @@ Você começa na ilha inicial coletando recursos, vende materiais, compra bluepr
 - Melhore machado/picareta para aumentar o ganho por clique e liberar minérios
 - Desbloqueie a **Ilha 2** para ferro, carvão e ouro
 - Use a **Fornalha** para transformar minérios + carvão em lingotes
+- Desbloqueie a **Ilha 3** para autômatos
 
-## Como rodar localmente
+## ⚙️ Como rodar localmente
 
-Como o projeto usa módulos ES (`type="module"`), abra com um servidor local (abrir o HTML direto pelo `file://` pode falhar).
+Como o projeto usa módulos ES (`type="module"`), abra com um servidor local — abrir o HTML direto pelo `file://` pode falhar.
 
 Exemplos:
 
@@ -31,14 +32,14 @@ python -m http.server 5500
 
 Depois acesse `http://localhost:5500`.
 
-## Deploy (HostGator / FTP)
+## 🚀 Deploy (HostGator / FTP)
 
 1. Envie os arquivos em modo **Binary** no FTP (importante para `.png`)
 2. Mantenha a estrutura de pastas (`index.html`, `assets/`, `src/`, `.htaccess`)
 3. Os nomes das imagens estão em **minúsculas** (necessário no Linux)
 4. Após atualizar, faça hard refresh ou teste em aba anônima (cache de CSS/imagens)
 
-## Estrutura
+## 📁 Estrutura
 
 ```
 clickcraft/
@@ -55,16 +56,26 @@ clickcraft/
     └── utils/
 ```
 
-## Tecnologias
+## 🛠️ Tecnologias
 
 - HTML5
 - CSS3
-- JavaScript (Vanilla, ES modules)
+- JavaScript (Vanilla, ES Modules)
 
-## Status
+## 🤖 Uso de Inteligência Artificial
 
-Em desenvolvimento.
+Este projeto foi desenvolvido como um experimento de aprendizado com uso intensivo de IA. Ferramentas utilizadas:
 
-## Créditos
+- **Claude (Anthropic)** — suporte no aprendizado de HTML, CSS e JavaScript, revisão de lógica e guia de desenvolvimento ao longo de todo o projeto
+- **Google Gemini** — geração de todos os assets visuais do jogo (sprites, ícones, cursores e texturas) via prompts de pixel art
+- **Cursor (AI IDE)** — editor de código com IA integrada, utilizado como ambiente principal de desenvolvimento ao longo de todo o projeto
+
+> O objetivo foi aprender programação web na prática, usando IA como ferramenta de ensino e não como substituta do raciocínio — todo o código foi escrito e entendido pelo desenvolvedor.
+
+## 📌 Status
+
+🚧 Em desenvolvimento.
+
+## 👤 Créditos
 
 Desenvolvido por **Marcos** ([@marcosotaviolr](https://github.com/marcosotaviolr))
