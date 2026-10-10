@@ -2,6 +2,8 @@
 
 Jogo idle/clicker de fazenda em ilhas, feito com HTML, CSS e JavaScript puro (sem build e sem framework).
 
+## 🎮 Sobre
+
 Você coleta recursos, vende materiais, compra blueprints, fabrica ferramentas, libera ilhas e, no fim, compra autômatos que coletam sozinhos.
 
 Documentação completa do jogo e do código: [JOGO.md](JOGO.md).
@@ -17,7 +19,7 @@ Documentação completa do jogo e do código: [JOGO.md](JOGO.md).
 
 O progresso **não é salvo**: recarregar a página recomeça o jogo.
 
-## Como rodar localmente
+## ⚙️ Como rodar localmente
 
 O projeto usa módulos ES (`type="module"`). Abra com um servidor local — `file://` pode falhar.
 
@@ -27,7 +29,7 @@ python -m http.server 5500
 
 Acesse `http://localhost:5500`. No Cursor/VS Code, a extensão Live Server também funciona.
 
-## Publicar no GitHub
+## 📤 Publicar no GitHub
 
 1. Confirme que `TEST_ECONOMY` em `src/utils/constants.js` está `false` (preços reais do jogo).
 2. Não envie `.env`, chaves nem a pasta `.git` para a hospedagem.
@@ -43,7 +45,7 @@ O `.gitignore` já ignora artefatos de editor, `.env` e previews em `tools/shots
 4. Depois de atualizar, use hard refresh ou aba anônima (cache de CSS/imagens).
 5. O `.htaccess` força HTTPS — o SSL do domínio precisa estar ativo.
 
-GitHub Pages **não** usa `.htaccess`. Para o site público, use a HostGator (ou outro Apache) com essa pasta.
+> GitHub Pages **não** usa `.htaccess`. Para o site público, use a HostGator (ou outro Apache) com essa pasta.
 
 ## 📁 Estrutura
 
@@ -71,9 +73,9 @@ clickcraft/
 - CSS3
 - JavaScript (Vanilla, ES Modules)
 
-## Licença
+## 🤖 Uso de Inteligência Artificial
 
-MIT — veja [LICENSE](LICENSE).
+Este projeto foi desenvolvido como um experimento de aprendizado com uso intensivo de IA. Ferramentas utilizadas:
 
 - **Claude (Anthropic)** — suporte no aprendizado de HTML, CSS e JavaScript, revisão de lógica e guia de desenvolvimento ao longo de todo o projeto
 - **Google Gemini** — geração de todos os assets visuais do jogo (sprites, ícones, cursores e texturas) via prompts de pixel art
@@ -83,7 +85,13 @@ MIT — veja [LICENSE](LICENSE).
 
 ## 📌 Status
 
-🚧 Em desenvolvimento.
+✅ Versão inicial concluída — possível retorno ao desenvolvimento no futuro.
+
+🎮 [Jogar agora no GitHub Pages](https://marcosotaviolr.github.io/clickcraft)
+
+## 📄 Licença
+
+MIT — veja [LICENSE](LICENSE).
 
 ## 👤 Créditos
 
